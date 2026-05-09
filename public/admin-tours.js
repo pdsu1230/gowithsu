@@ -16,6 +16,8 @@ const itineraryExtraContainer = document.querySelector('#tour_itinerary_extra_co
 const tourDurationSelect = document.querySelector('#tour_duration');
 const tourPriceInput = document.querySelector('#tour_price');
 const tourTripDetailsInput = document.querySelector('#tour_trip_details');
+const tourNotesInput = document.querySelector('#tour_notes_text');
+const tourQuoteInput = document.querySelector('#tour_quote_text');
 const tourIncludesInput = document.querySelector('#tour_includes_text');
 const tourExcludesInput = document.querySelector('#tour_excludes_text');
 
@@ -393,6 +395,8 @@ function tourFormPayload() {
     max_altitude: document.querySelector('#tour_max_altitude').value.trim(),
     fixed_guest_count: Number.isNaN(fixedGuestCount) ? 12 : Math.min(Math.max(fixedGuestCount, 1), 200),
     trip_details: document.querySelector('#tour_trip_details').value.trim(),
+    notes_text: document.querySelector('#tour_notes_text').value.trim(),
+    quote_text: document.querySelector('#tour_quote_text').value.trim(),
     price: formatPriceVnd(tourPriceInput.value),
     itinerary_days: JSON.stringify(itineraryDays),
     itinerary_day1: itineraryDays[0]?.content || '',
@@ -406,6 +410,8 @@ function tourFormPayload() {
 function resetTourForm() {
   tourForm.reset();
   document.querySelector('#tour_form_id').value = '';
+  if (tourNotesInput) tourNotesInput.value = '';
+  if (tourQuoteInput) tourQuoteInput.value = '';
   uploadedImageUrls = [];
   pendingImageFiles = [];
   visibleItineraryDays = 1;
@@ -437,6 +443,8 @@ function fillTourForm(tour) {
   document.querySelector('#tour_max_altitude').value = tour.max_altitude || '';
   document.querySelector('#tour_fixed_guest_count').value = Number.parseInt(tour.fixed_guest_count, 10) || 12;
   document.querySelector('#tour_trip_details').value = tour.trip_details || '';
+  if (tourNotesInput) tourNotesInput.value = tour.notes_text || '';
+  if (tourQuoteInput) tourQuoteInput.value = tour.quote_text || '';
   tourPriceInput.value = formatPriceVnd(tour.price || '');
   const dynamicItineraryDays = parseItineraryDays(tour.itinerary_days);
   const legacyItineraryDays = [tour.itinerary_day1 || '', tour.itinerary_day2 || '', tour.itinerary_day3 || '']

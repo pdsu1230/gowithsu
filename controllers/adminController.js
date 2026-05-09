@@ -176,6 +176,8 @@ function sanitizeTourPayload(payload) {
     max_altitude: String(payload.max_altitude || '').trim(),
     fixed_guest_count: normalizeGuestCount(payload.fixed_guest_count),
     trip_details: String(payload.trip_details || '').trim(),
+    notes_text: String(payload.notes_text || '').trim(),
+    quote_text: String(payload.quote_text || '').trim(),
     price: normalizePriceLabel(payload.price),
     itinerary_days: JSON.stringify(itineraryDays),
     itinerary_day1: itineraryDays[0]?.content || '',

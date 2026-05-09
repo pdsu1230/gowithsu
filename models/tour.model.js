@@ -37,6 +37,8 @@ const TourModel = {
         max_altitude,
         fixed_guest_count,
         trip_details,
+        notes_text,
+        quote_text,
         price,
         itinerary_days,
         itinerary_day1,
@@ -45,7 +47,7 @@ const TourModel = {
         includes_text,
         excludes_text
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
       data.title,
       data.category,
@@ -59,6 +61,8 @@ const TourModel = {
       data.max_altitude,
       data.fixed_guest_count,
       data.trip_details,
+      data.notes_text,
+      data.quote_text,
       data.price,
       data.itinerary_days,
       data.itinerary_day1,
@@ -85,6 +89,8 @@ const TourModel = {
         max_altitude = ?,
         fixed_guest_count = ?,
         trip_details = ?,
+        notes_text = ?,
+        quote_text = ?,
         price = ?,
         itinerary_days = ?,
         itinerary_day1 = ?,
@@ -106,6 +112,8 @@ const TourModel = {
       data.max_altitude,
       data.fixed_guest_count,
       data.trip_details,
+      data.notes_text,
+      data.quote_text,
       data.price,
       data.itinerary_days,
       data.itinerary_day1,

@@ -322,6 +322,14 @@ function ensureTourDetailColumns() {
     exec("ALTER TABLE tours ADD COLUMN trip_details TEXT DEFAULT ''");
   }
 
+  if (!columnNames.includes('notes_text')) {
+    exec("ALTER TABLE tours ADD COLUMN notes_text TEXT DEFAULT ''");
+  }
+
+  if (!columnNames.includes('quote_text')) {
+    exec("ALTER TABLE tours ADD COLUMN quote_text TEXT DEFAULT ''");
+  }
+
   if (!columnNames.includes('price')) {
     exec("ALTER TABLE tours ADD COLUMN price TEXT DEFAULT ''");
   }
@@ -469,6 +477,8 @@ async function initDatabase() {
       max_altitude TEXT,
       fixed_guest_count INTEGER DEFAULT 12,
       trip_details TEXT,
+      notes_text TEXT,
+      quote_text TEXT,
       price TEXT,
       itinerary_days TEXT,
       itinerary_day1 TEXT,
