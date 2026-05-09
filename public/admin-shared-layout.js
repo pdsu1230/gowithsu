@@ -27,10 +27,7 @@
     return `
 <aside class="fixed left-0 top-0 z-50 flex h-screen w-64 flex-col border-none bg-white font-['Be_Vietnam_Pro'] text-sm font-medium">
   <div class="flex flex-col gap-2 p-8">
-    <div class="mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-primary-container">
-      <span class="material-symbols-outlined text-3xl text-white">landscape</span>
-    </div>
-    <h1 class="flex items-center gap-2 h-10"><img src="${LOGO_PATH}" alt="GoWithSu Logo" class="h-8 w-auto"/></h1>
+    <h1 class="flex items-center gap-2 h-20"><img src="${LOGO_PATH}" alt="GoWithSu Logo" class="h-16 w-auto"/></h1>
     <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Quản lý</p>
   </div>
 

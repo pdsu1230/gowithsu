@@ -126,10 +126,22 @@
         <li><a class="text-slate-500 dark:text-slate-400 text-sm md:text-[15px] leading-6 md:leading-7 hover:text-emerald-600 transition-colors" href="/safety-guide.html">Hướng dẫn an toàn</a></li>
       </ul>
     </div>
-    <div class="col-span-1">
+    <div class="col-span-2 md:col-span-1">
       <h4 class="font-bold text-emerald-900 dark:text-emerald-50 mb-4 md:mb-5 uppercase tracking-[0.14em] text-xs md:text-[13px]">Liên hệ</h4>
-      <p class="text-slate-500 dark:text-slate-400 mb-2.5 md:mb-3 text-sm md:text-[15px] leading-6 md:leading-7">Email: gowithsutour@gmail.com</p>
-      <p class="text-slate-500 dark:text-slate-400 mb-2.5 md:mb-3 text-sm md:text-[15px] leading-6 md:leading-7">Hotline: 033 669 2307</p>
+      <div class="space-y-2.5 md:space-y-3">
+        <a class="flex items-center gap-2.5 text-slate-500 dark:text-slate-400 text-sm md:text-[15px] leading-6 md:leading-7 transition-colors hover:text-emerald-600" href="mailto:gowithsutour@gmail.com" aria-label="Email GoWithSu" title="Email GoWithSu">
+          <span class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 text-slate-600 transition-colors hover:border-emerald-400 hover:text-emerald-700">
+            <span class="material-symbols-outlined text-[19px]">mail</span>
+          </span>
+          <span class="whitespace-nowrap">gowithsutour@gmail.com</span>
+        </a>
+        <a class="flex items-center gap-2.5 text-slate-500 dark:text-slate-400 text-sm md:text-[15px] leading-6 md:leading-7 transition-colors hover:text-emerald-600" href="tel:0336692307" aria-label="Hotline GoWithSu" title="Hotline GoWithSu">
+          <span class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 text-slate-600 transition-colors hover:border-emerald-400 hover:text-emerald-700">
+            <span class="material-symbols-outlined text-[19px]">call</span>
+          </span>
+          <span class="whitespace-nowrap">033 669 2307</span>
+        </a>
+      </div>
     </div>
   </div>
   <div class="max-w-7xl mx-auto px-4 md:px-8 mt-10 md:mt-16 pt-6 md:pt-8 pb-24 md:pb-0 border-t border-slate-200 dark:border-slate-800 text-center">

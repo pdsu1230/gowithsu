@@ -347,8 +347,11 @@ function ensureTourDetailColumns() {
         try {
           const parsed = JSON.parse(rawItineraryDays);
           if (Array.isArray(parsed) && parsed.length > 0) {
-            // Check for corrupted [object Object] entries
-            const hasCorrupted = parsed.some((item) => String(item || '').includes('[object Object]'));
+            // Only treat literal string "[object Object]" as corrupted legacy data.
+            // Legitimate itinerary items are objects like { title, content } and must be preserved.
+            const hasCorrupted = parsed.some((item) => (
+              typeof item === 'string' && item.includes('[object Object]')
+            ));
             isValid = !hasCorrupted;
           }
         } catch (_e) {}
