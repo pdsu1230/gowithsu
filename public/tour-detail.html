@@ -228,7 +228,7 @@
             <span class="h-1 w-8 rounded-full bg-primary"></span>
             Tổng quan hành trình
           </h2>
-          <p id="tour-detail-trip-details" class="text-base md:text-lg leading-relaxed text-on-surface/80">Đang cập nhật chi tiết
+          <p id="tour-detail-trip-details" class="whitespace-pre-line text-base md:text-lg leading-relaxed text-on-surface/80">Đang cập nhật chi tiết
             chuyến đi.</p>
         </div>
 
@@ -240,22 +240,52 @@
           <div id="tour-detail-itinerary" class="ml-2 md:ml-4 space-y-0 border-l-2 border-primary/10"></div>
         </div>
 
-        <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-          <div class="rounded-xl bg-surface-container-low p-5 md:p-8">
-            <h4 class="mb-6 flex items-center gap-2 text-lg font-bold text-primary">
-              <span class="material-symbols-outlined">check_circle</span>
-              Bao gồm
-            </h4>
-            <p id="tour-detail-includes" class="whitespace-pre-line leading-relaxed text-on-surface-variant">Đang cập
-              nhật.</p>
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+          <div class="rounded-2xl border border-emerald-200/70 bg-emerald-50/45 p-5 md:p-7 shadow-[0_10px_28px_-18px_rgba(16,185,129,0.35)]">
+            <div class="mb-5 flex items-center gap-3">
+              <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                <span class="material-symbols-outlined">check_circle</span>
+              </span>
+              <div>
+                <p class="text-[11px] font-bold uppercase tracking-[0.15em] text-emerald-600/80">Quyền lợi</p>
+                <h4 class="text-lg font-extrabold text-emerald-900">Bao gồm</h4>
+              </div>
+            </div>
+            <p id="tour-detail-includes" class="whitespace-pre-line leading-relaxed text-slate-700">Đang cập nhật.</p>
           </div>
-          <div class="rounded-xl bg-surface-container-low p-5 md:p-8">
-            <h4 class="mb-6 flex items-center gap-2 text-lg font-bold text-secondary">
-              <span class="material-symbols-outlined">cancel</span>
-              Không bao gồm
-            </h4>
-            <p id="tour-detail-excludes" class="whitespace-pre-line leading-relaxed text-on-surface-variant">Đang cập
-              nhật.</p>
+
+          <div class="rounded-2xl border border-rose-200/70 bg-rose-50/45 p-5 md:p-7 shadow-[0_10px_28px_-18px_rgba(244,63,94,0.35)]">
+            <div class="mb-5 flex items-center gap-3">
+              <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-rose-100 text-rose-700">
+                <span class="material-symbols-outlined">cancel</span>
+              </span>
+              <div>
+                <p class="text-[11px] font-bold uppercase tracking-[0.15em] text-rose-600/80">Loại trừ</p>
+                <h4 class="text-lg font-extrabold text-rose-900">Không bao gồm</h4>
+              </div>
+            </div>
+            <p id="tour-detail-excludes" class="whitespace-pre-line leading-relaxed text-slate-700">Đang cập nhật.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-5">
+          <div id="tour-detail-notes-card" class="rounded-2xl border border-amber-200/75 bg-amber-50/50 p-5 md:p-7 shadow-[0_10px_28px_-18px_rgba(245,158,11,0.35)]">
+            <div class="mb-5 flex items-center gap-3">
+              <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 text-amber-700">
+                <span class="material-symbols-outlined">info</span>
+              </span>
+              <div>
+                <p class="text-[11px] font-bold uppercase tracking-[0.15em] text-amber-700/80">Nhắc trước</p>
+                <h4 class="text-lg font-extrabold text-amber-900">Lưu ý</h4>
+              </div>
+            </div>
+            <p id="tour-detail-notes" class="whitespace-pre-line leading-relaxed text-slate-700">Đang cập nhật.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-8">
+          <div id="tour-detail-quote-card" class="flex items-center rounded-xl bg-primary/95 p-5 md:p-8 text-on-primary shadow-xl shadow-primary/15">
+            <blockquote id="tour-detail-quote" class="w-full whitespace-pre-line text-base md:text-lg italic leading-relaxed text-on-primary/95">Đang cập nhật.</blockquote>
           </div>
         </div>
 
@@ -341,7 +371,7 @@
   <div id="shared-footer-mount"></div>
 
   <script src="/shared-layout.js"></script>
-  <script src="/tour-detail.js?v=20260425-1"></script>
+  <script src="/tour-detail.js?v=20260509-1"></script>
   <script src="/mobile-nav.js"></script>
   <script src="/nav-search.js"></script>
 </body>

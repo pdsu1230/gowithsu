@@ -421,6 +421,12 @@ function resetTourForm() {
   setRadioValue('tour_difficulty', 'Dễ', 'Dễ');
   delete tourIncludesInput.dataset.autoPrefixSeeded;
   delete tourExcludesInput.dataset.autoPrefixSeeded;
+  if (tourTripDetailsInput) {
+    delete tourTripDetailsInput.dataset.autoPrefixSeeded;
+  }
+  if (tourNotesInput) {
+    delete tourNotesInput.dataset.autoPrefixSeeded;
+  }
   updateImageNameInput();
   renderImagePreview();
   updateItineraryUi([{ title: '', content: '' }]);
@@ -463,6 +469,12 @@ function fillTourForm(tour) {
   document.querySelector('#tour_excludes_text').value = tour.excludes_text || '';
   delete tourIncludesInput.dataset.autoPrefixSeeded;
   delete tourExcludesInput.dataset.autoPrefixSeeded;
+  if (tourTripDetailsInput) {
+    delete tourTripDetailsInput.dataset.autoPrefixSeeded;
+  }
+  if (tourNotesInput) {
+    delete tourNotesInput.dataset.autoPrefixSeeded;
+  }
   tourEditDialog.showModal();
 }
 
@@ -503,6 +515,24 @@ tourPriceInput.addEventListener('blur', () => {
 function addAutoPrefixOnEnter(inputElement, prefix, applyFirstLine = false) {
   if (!inputElement) {
     return;
+  }
+
+  function normalizePrefixedLines(rawValue) {
+    return String(rawValue || '')
+      .split('\n')
+      .map((line) => {
+        const trimmed = line.trim();
+        if (!trimmed) {
+          return '';
+        }
+
+        if (trimmed.startsWith(prefix)) {
+          return trimmed;
+        }
+
+        return `${prefix} ${trimmed}`;
+      })
+      .join('\n');
   }
 
   const prefixedValue = `${prefix} `;
@@ -547,10 +577,35 @@ function addAutoPrefixOnEnter(inputElement, prefix, applyFirstLine = false) {
     inputElement.selectionStart = nextCaret;
     inputElement.selectionEnd = nextCaret;
   });
+
+  inputElement.addEventListener('paste', (event) => {
+    const clipboardText = event.clipboardData?.getData('text');
+    if (typeof clipboardText !== 'string') {
+      return;
+    }
+
+    event.preventDefault();
+
+    const start = inputElement.selectionStart;
+    const end = inputElement.selectionEnd;
+    const currentValue = inputElement.value;
+    const before = currentValue.slice(0, start);
+    const after = currentValue.slice(end);
+    const normalizedPastedText = normalizePrefixedLines(clipboardText);
+    const nextValue = `${before}${normalizedPastedText}${after}`;
+
+    inputElement.value = nextValue;
+
+    const nextCaret = before.length + normalizedPastedText.length;
+    inputElement.selectionStart = nextCaret;
+    inputElement.selectionEnd = nextCaret;
+  });
 }
 
 addAutoPrefixOnEnter(tourIncludesInput, '✓', true);
 addAutoPrefixOnEnter(tourExcludesInput, '✕', true);
+addAutoPrefixOnEnter(tourTripDetailsInput, '●', true);
+addAutoPrefixOnEnter(tourNotesInput, '●', true);
 
 let allTours = [];
 

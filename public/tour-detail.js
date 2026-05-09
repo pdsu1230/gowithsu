@@ -631,6 +631,20 @@ async function loadTourDetail() {
   renderItinerary(tour);
   document.querySelector('#tour-detail-includes').textContent = getDetailValue(tour, 'includes_text', 'Đang cập nhật.');
   document.querySelector('#tour-detail-excludes').textContent = getDetailValue(tour, 'excludes_text', 'Đang cập nhật.');
+
+  const notesValue = getDetailValue(tour, 'notes_text', 'Đang cập nhật.');
+  const quoteValue = getDetailValue(tour, 'quote_text', 'Đang cập nhật.');
+  const notesElement = document.querySelector('#tour-detail-notes');
+  const quoteElement = document.querySelector('#tour-detail-quote');
+
+  if (notesElement) {
+    notesElement.textContent = notesValue;
+  }
+
+  if (quoteElement) {
+    quoteElement.textContent = quoteValue;
+  }
+
   await loadSuggestedTour(tour.id);
 }
 

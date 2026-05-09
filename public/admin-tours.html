@@ -194,10 +194,10 @@
           <button id="tour-dialog-close" class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white text-slate-700 shadow-sm transition hover:bg-slate-100" type="button" aria-label="Đóng" title="Đóng">&times;</button>
         </div>
 
-        <form id="tour-form" class="grid grid-cols-1 gap-x-12 gap-y-8 md:grid-cols-2">
+        <form id="tour-form" class="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2">
           <input type="hidden" id="tour_form_id" />
 
-          <div class="space-y-8">
+          <div class="space-y-8 rounded-2xl border border-slate-200/80 bg-white/80 p-6 shadow-sm">
             <label class="flex flex-col gap-2">
               <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Tên hành trình</span>
               <input id="tour_title" class="rounded-xl bg-surface-container-lowest p-4 text-sm shadow-sm transition-all focus:ring-2 focus:ring-primary/20" placeholder="VD: Majestic Dolomite Traverse" type="text" required />
@@ -257,7 +257,7 @@
             </label>
           </div>
 
-          <div class="space-y-8">
+          <div class="space-y-8 rounded-2xl border border-slate-200/80 bg-white/80 p-6 shadow-sm">
             <label class="flex flex-col gap-2">
               <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Hình ảnh chủ đạo</span>
               <div class="group flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-outline-variant bg-surface-container-low p-8 text-center transition-all hover:border-primary hover:bg-surface-container">
@@ -300,23 +300,14 @@
 
           </div>
 
-          <label class="flex flex-col gap-2 md:col-span-2">
-            <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Tổng quan hành trình</span>
-            <textarea id="tour_trip_details" class="resize-none rounded-xl bg-surface-container-lowest p-4 text-sm shadow-sm transition-all focus:ring-2 focus:ring-primary/20" placeholder="Mô tả tổng quan cung đường, điểm nhấn và lưu ý chính..." rows="6"></textarea>
-          </label>
-
-          <div class="grid grid-cols-1 gap-4 md:col-span-2 md:grid-cols-2">
+          <div class="md:col-span-2 rounded-2xl border border-slate-200/80 bg-white/85 p-6 shadow-sm">
             <label class="flex flex-col gap-2">
-              <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Lưu ý</span>
-              <textarea id="tour_notes_text" class="resize-none rounded-xl bg-surface-container-lowest p-4 text-sm shadow-sm transition-all focus:ring-2 focus:ring-primary/20" placeholder="Ví dụ: Mang áo mưa mỏng, có mặt trước 15 phút..." rows="3"></textarea>
-            </label>
-            <label class="flex flex-col gap-2">
-              <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Câu quote</span>
-              <textarea id="tour_quote_text" class="resize-none rounded-xl bg-surface-container-lowest p-4 text-sm italic shadow-sm transition-all focus:ring-2 focus:ring-primary/20" placeholder="Ví dụ: Đi để thấy mình nhỏ lại giữa núi rừng." rows="3"></textarea>
+              <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Tổng quan hành trình</span>
+              <textarea id="tour_trip_details" class="resize-none rounded-xl bg-surface-container-lowest p-4 text-sm shadow-sm transition-all focus:ring-2 focus:ring-primary/20" placeholder="Mô tả tổng quan cung đường, điểm nhấn và lưu ý chính..." rows="6"></textarea>
             </label>
           </div>
 
-          <div class="mt-8 space-y-12 md:col-span-2">
+          <div class="mt-2 space-y-10 rounded-2xl border border-slate-200/80 bg-white/90 p-6 md:col-span-2 shadow-sm">
             <div class="flex flex-col gap-6">
               <div class="flex items-center justify-between gap-4">
                 <h5 class="flex items-center gap-3 text-xl font-bold text-primary">
@@ -336,7 +327,7 @@
               <div id="tour_itinerary_extra_container" class="space-y-4"></div>
             </div>
 
-            <div class="grid grid-cols-1 gap-12 md:grid-cols-2">
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
               <label class="flex flex-col gap-4">
                 <span class="flex items-center gap-3 text-lg font-bold text-primary"><span class="material-symbols-outlined text-emerald-600">check_circle</span>Bao gồm</span>
                 <textarea id="tour_includes_text" class="rounded-xl bg-white p-4 text-sm shadow-sm focus:ring-2 focus:ring-emerald-500/20" placeholder="Hướng dẫn viên chuyên nghiệp, trang thiết bị, bữa ăn..." rows="4"></textarea>
@@ -346,9 +337,26 @@
                 <textarea id="tour_excludes_text" class="rounded-xl bg-white p-4 text-sm shadow-sm focus:ring-2 focus:ring-error/20" placeholder="Vé máy bay, bảo hiểm du lịch..." rows="4"></textarea>
               </label>
             </div>
+
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+              <label class="flex flex-col gap-4">
+                <span class="flex items-center gap-3 text-lg font-bold text-primary">
+                  <span class="material-symbols-outlined text-primary">info</span>
+                  Lưu ý
+                </span>
+                <textarea id="tour_notes_text" class="rounded-xl bg-white p-4 text-sm shadow-sm transition-all focus:ring-2 focus:ring-primary/20" placeholder="Ví dụ: Mang áo mưa mỏng, có mặt trước 15 phút..." rows="4"></textarea>
+              </label>
+              <label class="flex flex-col gap-4">
+                <span class="flex items-center gap-3 text-lg font-bold text-primary">
+                  <span class="material-symbols-outlined text-primary">format_quote</span>
+                  Câu quote
+                </span>
+                <textarea id="tour_quote_text" class="rounded-xl bg-white p-4 text-sm shadow-sm transition-all focus:ring-2 focus:ring-primary/20" placeholder="Ví dụ: Đi để thấy mình nhỏ lại giữa núi rừng." rows="4"></textarea>
+              </label>
+            </div>
           </div>
 
-          <div class="flex justify-end gap-4 border-t border-slate-200/50 pt-12 md:col-span-2">
+          <div class="flex justify-end gap-4 border-t border-slate-200/70 pt-8 md:col-span-2">
             <button id="tour-dialog-cancel" class="px-8 py-3 font-bold text-slate-400 transition-colors hover:text-primary" type="button">Hủy bản nháp</button>
             <button class="rounded-xl bg-primary px-10 py-4 font-bold text-on-primary shadow-2xl shadow-primary/30 transition-all hover:scale-105 active:scale-95" type="submit">Xuất bản hành trình</button>
           </div>
