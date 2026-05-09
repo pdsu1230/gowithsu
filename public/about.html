@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Về Tôi | GoWithSu</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+  <link href="/mobile-search.css" rel="stylesheet" />
+  <link href="/mobile-go.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: "Be Vietnam Pro", sans-serif;
+      background: radial-gradient(circle at 10% 10%, #e8f7dc 0%, #f8f9fa 45%), linear-gradient(145deg, #f8f9fa 0%, #eef3ea 100%);
+      color: #191c1d;
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24;
+    }
+  </style>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#143600",
+            "primary-fixed": "#c4efa4",
+            background: "#f8f9fa",
+            surface: "#f8f9fa",
+            "surface-container-low": "#f3f4f5",
+            "surface-container": "#edeeef",
+            "surface-container-high": "#e7e8e9",
+            "outline-variant": "#c3c9b9",
+            "on-surface": "#191c1d",
+            "on-surface-variant": "#43493d",
+            "on-primary": "#ffffff"
+          }
+        }
+      }
+    };
+  </script>
+</head>
+
+<body class="bg-background text-on-surface">
+  <div id="shared-navbar-mount"></div>
+  <div id="shared-mobile-search-mount"></div>
+
+  <main class="min-h-screen pt-24 md:pt-28 pb-14 md:pb-20">
+    <section class="mx-auto grid max-w-7xl grid-cols-1 gap-8 md:gap-12 px-4 md:px-8 md:grid-cols-12">
+      <div class="md:col-span-5">
+        <div class="relative overflow-hidden rounded-3xl border border-white/70 bg-white/70 p-6 shadow-xl shadow-emerald-900/10 backdrop-blur">
+          <img class="h-[330px] md:h-[460px] w-full rounded-2xl object-cover" src="/Images/IMG_0041.jpg" alt="Chân dung Đặng Sự" />
+          <div class="absolute left-10 top-10 rounded-full bg-primary/90 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-white">
+            Kẻ vô danh
+          </div>
+        </div>
+      </div>
+
+      <div class="md:col-span-7">
+        <div class="mb-6 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-primary">
+          <span class="material-symbols-outlined text-base">person</span>
+          Giới thiệu
+        </div>
+        <h1 class="text-4xl md:text-6xl font-black tracking-tight text-primary">Đăng Sử</h1>
+        <p class="mt-4 md:mt-5 max-w-3xl text-base md:text-lg leading-relaxed text-on-surface-variant">
+          Mình là Đăng Sử - kẻ vô danh, ngày ngày đi code dạo kiếm cơm, cuối tuần tranh thủ đi trekking để sống ảo và
+          kiếm thêm chút thu nhập. Với hơn 10 năm kinh nghiệm trong lĩnh vực phượt và 5 năm kinh nghiệm trekking, mình
+          đã đồng hành cùng hơn 500 khách hàng trên những hành trình khám phá thiên nhiên tuyệt vời. Mình cam kết mang
+          đến trải nghiệm an toàn, vui vẻ và đáng nhớ cho mọi người.
+        </p>
+
+        <div class="mt-8 md:mt-10 grid grid-cols-1 gap-4 md:gap-5 sm:grid-cols-3">
+          <div class="rounded-2xl border border-outline-variant/70 bg-white/80 p-5">
+            <p class="text-3xl font-black text-primary">10+ năm</p>
+            <p class="mt-2 text-sm font-semibold uppercase tracking-wider text-on-surface-variant">Phượt</p>
+          </div>
+          <div class="rounded-2xl border border-outline-variant/70 bg-white/80 p-5">
+            <p class="text-3xl font-black text-primary">5+ năm</p>
+            <p class="mt-2 text-sm font-semibold uppercase tracking-wider text-on-surface-variant">Trekking</p>
+          </div>
+          <div class="rounded-2xl border border-outline-variant/70 bg-white/80 p-5">
+            <p class="text-3xl font-black text-primary">100%</p>
+            <p class="mt-2 text-sm font-semibold uppercase tracking-wider text-on-surface-variant">An toàn, vui vẻ</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto mt-10 md:mt-16 max-w-7xl px-4 md:px-8">
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <article class="rounded-3xl border border-outline-variant/80 bg-white/80 p-5 md:p-8 shadow-sm">
+          <h2 class="text-2xl font-extrabold tracking-tight text-primary">Triết lý cá nhân</h2>
+          <p class="mt-4 leading-relaxed text-on-surface-variant">
+            Mỗi chuyến đi đều cần sự chuẩn bị kỹ lưỡng, tâm huyết và trách nhiệm. Mình tin rằng trekking không chỉ là
+            dẫn dắt, mà là quá trình rèn luyện bản lĩnh và kết nối con người với thiên nhiên.
+          </p>
+        </article>
+        <article class="rounded-3xl border border-outline-variant/80 bg-white/80 p-5 md:p-8 shadow-sm">
+          <h2 class="text-2xl font-extrabold tracking-tight text-primary">Mình làm gì tại GoWithSu</h2>
+          <ul class="mt-4 space-y-3 text-on-surface-variant">
+            <li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary">done</span><span>Thiết kế lịch trình và tiêu chuẩn vận hành cho từng chuyến đi.</span></li>
+            <li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary">done</span><span>Đem lại những bức hình đẹp và ấn tượng.</span></li>
+            <li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary">done</span><span>Đồng hành cùng các bạn trong xuyên suốt hành trình.</span></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="mx-auto mt-10 md:mt-14 max-w-7xl px-4 md:px-8">
+      <div class="rounded-3xl bg-primary p-6 md:p-10 text-white shadow-2xl shadow-primary/20">
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-primary-fixed">Liên hệ trực tiếp</p>
+        <h2 class="mt-2 text-2xl md:text-3xl font-black tracking-tight">Bạn muốn trao đổi hành trình phù hợp?</h2>
+        <p class="mt-4 max-w-3xl text-white/85">
+          Mình luôn sẵn sàng tư vấn cho bạn về mục tiêu, độ khó và lộ trình trekking phù hợp nhất.
+        </p>
+        <div class="mt-7 flex flex-wrap gap-4">
+          <a href="mailto:gowithsutour@gmail.com" class="rounded-full bg-white px-6 py-3 text-sm font-bold text-primary">gowithsutour@gmail.com</a>
+          <a href="tel:0336692307" class="rounded-full border border-white/40 px-6 py-3 text-sm font-bold text-white">033 669 2307 (Đăng Sử)</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="shared-footer-mount"></div>
+
+  <a href="/booking" class="mobile-go-fab fixed bottom-4 right-4 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary text-sm font-black uppercase tracking-wider text-on-primary shadow-[0_20px_40px_-18px_rgba(20,54,0,0.55)] transition-transform active:scale-95 md:hidden" aria-label="Đặt tour ngay">
+    GO
+  </a>
+
+  <div id="shared-admin-dialog-mount"></div>
+
+  <script src="/shared-layout.js"></script>
+  <script src="/mobile-nav.js"></script>
+  <script>
+    const _adminLoginDialog = document.querySelector('#admin-login-dialog');
+    const _adminLoginForm = document.querySelector('#admin-login-form');
+    const _adminLoginStatus = document.querySelector('#admin-login-status');
+    const _adminLoginOpenBtn = document.querySelector('#admin-login-open-btn');
+    const _adminLoginCloseBtn = document.querySelector('#admin-login-close-btn');
+
+    _adminLoginOpenBtn.addEventListener('click', async () => {
+      try {
+        const sessionRes = await fetch('/api/admin/session');
+        if (sessionRes.ok) {
+          const sessionData = await sessionRes.json();
+          if (sessionData && sessionData.authenticated) {
+            window.location.href = '/admin/overview';
+            return;
+          }
+        }
+      } catch (_) {
+        // Ignore and fall back to login dialog.
+      }
+
+      _adminLoginStatus.textContent = '';
+      _adminLoginDialog.showModal();
+    });
+
+    _adminLoginCloseBtn.addEventListener('click', () => _adminLoginDialog.close());
+    _adminLoginDialog.addEventListener('click', (e) => {
+      if (e.target === _adminLoginDialog) _adminLoginDialog.close();
+    });
+    _adminLoginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      _adminLoginStatus.textContent = 'Đang đăng nhập...';
+      const usernameInput = document.querySelector('#admin_username') || document.querySelector('#admin-username');
+      const passwordInput = document.querySelector('#admin_password') || document.querySelector('#admin-password');
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: String(usernameInput?.value || '').trim(),
+          password: String(passwordInput?.value || '').trim()
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) { _adminLoginStatus.textContent = data.message || 'Không đăng nhập được.'; return; }
+      window.location.href = data.redirectTo || '/admin';
+    });
+  </script>
+  <script src="/nav-search.js"></script>
+  <script>
+    document.querySelectorAll('[data-discover-tour-link]').forEach((link) => {
+      link.addEventListener('click', async (event) => {
+        event.preventDefault();
+        try {
+          const res = await fetch('/api/discover/random-tour');
+          if (!res.ok) { window.location.href = '/#tour-list-section'; return; }
+          const tour = await res.json();
+          window.location.href = (tour && tour.href) ? tour.href : '/#tour-list-section';
+        } catch (_) {
+          window.location.href = '/#tour-list-section';
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
+

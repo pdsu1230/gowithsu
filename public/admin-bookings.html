@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html class="light" lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GoWithSu | Quản Trị Booking</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-primary-fixed": "#092100",
+            "background": "#f8f9fa",
+            "surface-container-lowest": "#ffffff",
+            "surface-container": "#edeeef",
+            "primary-container": "#2a4d14",
+            "on-tertiary-fixed": "#2a1800",
+            "surface-bright": "#f8f9fa",
+            "on-primary": "#ffffff",
+            "tertiary-container": "#5a401d",
+            "outline": "#73796c",
+            "on-secondary-container": "#4e6874",
+            "surface-container-highest": "#e1e3e4",
+            "primary": "#143600",
+            "error": "#ba1a1a",
+            "on-tertiary-fixed-variant": "#5c421f",
+            "on-background": "#191c1d",
+            "secondary-fixed": "#cbe7f5",
+            "secondary-container": "#cbe7f5",
+            "on-primary-fixed-variant": "#2c4f16",
+            "tertiary-fixed": "#ffddb6",
+            "secondary": "#48626e",
+            "surface": "#f8f9fa",
+            "surface-container-high": "#e7e8e9",
+            "on-secondary": "#ffffff",
+            "on-tertiary-container": "#d1ac80",
+            "primary-fixed-dim": "#a8d38a",
+            "secondary-fixed-dim": "#afcbd8",
+            "surface-container-low": "#f3f4f5",
+            "on-secondary-fixed": "#021f29",
+            "inverse-surface": "#2e3132",
+            "outline-variant": "#c3c9b9",
+            "on-surface-variant": "#43493d",
+            "on-error-container": "#93000a",
+            "error-container": "#ffdad6",
+            "on-surface": "#191c1d",
+            "inverse-on-surface": "#f0f1f2",
+            "surface-variant": "#e1e3e4",
+            "on-tertiary": "#ffffff",
+            "inverse-primary": "#a8d38a",
+            "tertiary": "#412a09",
+            "surface-dim": "#d9dadb",
+            "primary-fixed": "#c4efa4",
+            "on-secondary-fixed-variant": "#304a55",
+            "on-error": "#ffffff"
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body { font-family: 'Be Vietnam Pro', sans-serif; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+    .glass-panel {
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Member table rendered by JS */
+    .member-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .member-table thead th {
+      background: rgba(20,54,0,0.06);
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #48626e;
+    }
+    .member-table tbody td {
+      padding: 10px 14px;
+      border-top: 1px solid #f1f5f9;
+      color: #191c1d;
+      vertical-align: middle;
+    }
+    .member-table tbody tr:hover { background: #f8f9fa; }
+    #delete-member-confirm-dialog::backdrop {
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background selection:bg-primary-fixed selection:text-primary overflow-x-hidden">
+
+  <!-- Sidebar -->
+  <div id="admin-sidebar-mount"></div>
+
+  <!-- Main -->
+  <main class="ml-64 min-h-screen">
+
+    <!-- Top Header -->
+    <header class="sticky top-0 z-40 flex w-full items-center justify-between bg-slate-50/80 px-8 py-4 font-['Be_Vietnam_Pro'] tracking-tight shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] backdrop-blur-xl antialiased">
+      <div class="flex items-center gap-4">
+        <h2 class="text-lg font-bold tracking-tighter text-[#143600]">Danh sách tour theo ngày</h2>
+        <span class="rounded-full bg-surface-container-high px-3 py-1 text-xs font-bold uppercase tracking-wider text-on-secondary-container">Đơn đặt chỗ</span>
+      </div>
+      <div class="flex items-center gap-6">
+        <div class="relative">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">search</span>
+          <input id="booking-search" class="w-64 rounded-full border-none bg-white py-2 pl-10 pr-4 text-sm transition-all focus:ring-2 focus:ring-primary/10" placeholder="Tìm tên tour..." type="text" />
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="px-8 py-8 space-y-8">
+
+      <!-- Page Title Row -->
+      <div class="mb-10 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="mb-1 text-xs font-bold uppercase tracking-widest text-slate-400">Quản Trị Booking</p>
+          <h1 class="text-4xl font-black tracking-tighter text-primary">Danh sách tour theo ngày</h1>
+          <p class="mt-1 text-base text-secondary">Danh sách chuyến đi, Xem thành viên, xuất Excel.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <p id="booking-status" class="text-sm font-semibold text-secondary"></p>
+          <button id="export-week-btn"
+            class="flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-bold text-on-primary shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95"
+            type="button">
+            <span class="material-symbols-outlined">file_download</span>
+            Xuất tuần này
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="mb-8 grid grid-cols-3 gap-4">
+        <div class="rounded-2xl border border-primary/10 bg-white p-5 shadow-sm">
+          <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Chuyến sắp tới</p>
+          <p class="mt-1.5 text-3xl font-black text-primary" id="stat-groups">-</p>
+        </div>
+        <div class="rounded-2xl border border-primary/10 bg-white p-5 shadow-sm">
+          <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Tổng thành viên</p>
+          <p class="mt-1.5 text-3xl font-black text-primary" id="stat-members">-</p>
+        </div>
+        <div class="rounded-2xl border border-primary/10 bg-white p-5 shadow-sm">
+          <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Loại tour</p>
+          <p class="mt-1.5 text-3xl font-black text-primary" id="stat-tours">-</p>
+        </div>
+      </div>
+
+      <!-- Booking Groups (rendered by JS) -->
+      <div id="booking-groups" class="space-y-3"></div>
+
+      <div id="admin-footer-mount"></div>
+    </div>
+  </main>
+
+  <dialog id="delete-member-confirm-dialog" class="w-full max-w-md rounded-2xl border-none p-0 shadow-2xl">
+    <div class="rounded-2xl bg-white p-6">
+      <div class="flex items-start gap-3">
+        <div class="mt-0.5 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-600">
+          <span class="material-symbols-outlined">person_remove</span>
+        </div>
+        <div>
+          <h3 class="text-lg font-black tracking-tight text-slate-900">Xác nhận xóa thành viên</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600">Bạn có chắc muốn xóa <span id="delete-member-confirm-name" class="font-semibold text-slate-900">thành viên này</span> khỏi booking hiện tại?</p>
+        </div>
+      </div>
+      <div class="mt-6 flex items-center justify-end gap-3">
+        <button id="delete-member-confirm-cancel" type="button" class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50">Hủy</button>
+        <button id="delete-member-confirm-submit" type="button" class="rounded-xl bg-red-600 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-red-700">Xóa thành viên</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="/admin-shared-layout.js"></script>
+  <script src="/admin-bookings.js?v=20260504-1"></script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+
+<html lang="vi">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>GoWithSu | Hành Trình Núi Cao</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;300;400;500;600;700;800;900&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <link href="/mobile-search.css" rel="stylesheet" />
+  <link href="/mobile-go.css" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+    }
+
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      background-color: #f8f9fa;
+    }
+  </style>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed": "#c4efa4",
+            "on-surface": "#191c1d",
+            "on-secondary-fixed-variant": "#304a55",
+            "surface-container-high": "#e7e8e9",
+            "on-tertiary-container": "#d1ac80",
+            "background": "#f8f9fa",
+            "tertiary-fixed-dim": "#e6c093",
+            "surface-container-low": "#f3f4f5",
+            "outline-variant": "#c3c9b9",
+            "on-secondary-container": "#4e6874",
+            "on-background": "#191c1d",
+            "on-secondary-fixed": "#021f29",
+            "on-error-container": "#93000a",
+            "inverse-surface": "#2e3132",
+            "primary": "#143600",
+            "surface-container": "#edeeef",
+            "on-primary-container": "#94be78",
+            "surface-bright": "#f8f9fa",
+            "inverse-on-surface": "#f0f1f2",
+            "on-primary": "#ffffff",
+            "secondary": "#48626e",
+            "primary-container": "#2a4d14",
+            "surface-variant": "#e1e3e4",
+            "on-tertiary": "#ffffff",
+            "surface": "#f8f9fa",
+            "primary-fixed-dim": "#a8d38a",
+            "on-tertiary-fixed-variant": "#5c421f",
+            "error": "#ba1a1a",
+            "secondary-fixed": "#cbe7f5",
+            "tertiary-fixed": "#ffddb6",
+            "surface-container-highest": "#e1e3e4",
+            "surface-tint": "#43682c",
+            "secondary-container": "#cbe7f5",
+            "on-primary-fixed": "#092100",
+            "on-tertiary-fixed": "#2a1800",
+            "secondary-fixed-dim": "#afcbd8",
+            "tertiary": "#412a09",
+            "on-surface-variant": "#43493d",
+            "error-container": "#ffdad6",
+            "tertiary-container": "#5a401d",
+            "on-secondary": "#ffffff",
+            "on-error": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "on-primary-fixed-variant": "#2c4f16",
+            "inverse-primary": "#a8d38a",
+            "outline": "#73796c",
+            "surface-dim": "#d9dadb"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "1rem",
+            "xl": "1.5rem",
+            "full": "9999px"
+          },
+          "fontFamily": {
+            "headline": ["Be Vietnam Pro"],
+            "body": ["Be Vietnam Pro"],
+            "label": ["Be Vietnam Pro"]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+
+<body class="bg-background text-on-surface">
+  <div id="shared-navbar-mount"></div>
+  <div id="shared-mobile-search-mount"></div>
+
+  <!-- Hero Section -->
+  <section class="relative min-h-[78vh] md:min-h-screen flex items-center pt-16 md:pt-20 overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <img class="w-full h-full object-cover"
+        data-alt="Majestic high mountain range with snow-capped peaks against a clear blue sky, sharp lighting reflecting off the glaciers"
+        src="Images/IMG_0226.png" />
+      <div class="absolute inset-0 bg-gradient-to-r from-primary/40 to-transparent"></div>
+    </div>
+    <div class="relative z-10 max-w-7xl mx-auto px-4 md:px-8 w-full">
+      <div class="max-w-2xl">
+        <h1 class="text-4xl md:text-8xl font-extrabold tracking-tight text-white mb-5 md:mb-8 leading-[1.05]">
+          Chinh Phục <br /> <span class="text-primary-fixed-dim">Đỉnh Cao</span> Cùng Su.
+        </h1>
+        <p class="text-base md:text-xl text-white/90 mb-7 md:mb-12 font-medium leading-relaxed max-w-lg">
+          An toàn, vui vẻ, trải nghiệm sâu sắc và hòa mình cùng thiên nhiên.
+        </p>
+        <div class="flex flex-wrap gap-3 md:gap-4">
+          <a href="/tours"
+            class="bg-primary text-on-primary px-5 md:px-8 py-3 md:py-4 rounded-xl text-sm md:text-base font-bold flex items-center gap-2 md:gap-3 transition-all hover:translate-y-[-2px] shadow-2xl shadow-primary/20">
+            Khám phá hành trình
+            <span class="material-symbols-outlined">north_east</span>
+          </a>
+          <div class="hidden sm:flex items-center gap-4 bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl text-white">
+            <div class="flex -space-x-2">
+              <img class="w-8 h-8 rounded-full border-2 border-white/20 object-cover"
+                data-alt="Portrait of a female traveler with a mountain background"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFxir-Zq_sbDDX4NGfpoJcVdhr_68wXZij76x4eBWELCvBXP1Vo-HOfnAfQtTUzy1Eon7vWOKmv0YoASNPUOMxdCyBNzTAoa_2YUldhKJEtpuWdu4U3Ua9f0mpgR5HAXdm38cIMcmmGIwUeqm9kU5W9KNcITEDzuCOZvmjRmpHq95Mn70O3xkwL0ISbc_ESfUHZVneiNVSF8Kiv4HQtnfmOS49riylEz4cfT_Ff6dhn8Sjy1Fq2yWH7BfbG9ERjJaeNdx4XQoPhMky" />
+              <img class="w-8 h-8 rounded-full border-2 border-white/20 object-cover"
+                data-alt="Portrait of a smiling male trekker in professional gear"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHlXpUppPA7w_Gj6gYbPYSOmVc9JWDCv8tDaWHR3KkF7zbHkbZhfATcycEOBjnpyfRAaWbe5LFqwspaENLA_n8daxkyf14EYkwouNUkNKO9kYxXyoQenUgv84I2muyX-rlhB6dBaJZIfzyiN1mKjLdcWDPjGn-JgOKw2tR5o01Dthe0sYqMT2DFKSD6oMy_Qj_Q1NTxvbyKfUP4-eyPydrTEaqYJVIQPYNMUZbw0vDXuS34nMFM1dO6mYNoFjk20BoT7sCoLHVLCic" />
+              <div
+                class="w-8 h-8 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center text-[10px] font-bold">
+                500+</div>
+            </div>
+            <span class="text-sm font-medium">Đã chinh phục cùng mình</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Excellence Section (Editorial) 
+  <section class="py-24 bg-surface-container-low">
+    <div class="max-w-7xl mx-auto px-8">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-16 items-center">
+        <div class="md:col-span-5 order-2 md:order-1">
+          <div class="relative">
+            <img class="rounded-xl w-full h-[500px] object-cover shadow-2xl shadow-primary/5"
+              data-alt="Professional mountain guide pointing at the horizon during a high-altitude expedition at sunset"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHY4uxmBXyY1CraWW9_yEUJmYVo7SJcXYb8ZvZZkAaqSoL2FffNKqNf1yIEHrckk6R2kYQEzg0821zICRZfR-z_Z2q0lIP9lsk6DdACZRpMs4toHorTILq58F3Ion7JdVOjuVdYlEKrQ72CRAtkVJnER2Cu25Ws8CbTAnTKb-Py1det003UBzBiJ7Vba4_AO2m5VEOrkL3FWxDW1c49isOU1UDn27XTHYRqAfAY2bQupsfqSDBCCYkdxwQSJTIKtKr2wd5yh-ZTVun" />
+            <div class="absolute -bottom-8 -right-8 bg-surface-container-lowest p-8 rounded-xl shadow-xl max-w-[240px]">
+              <span class="material-symbols-outlined text-primary text-4xl mb-4" data-weight="fill">verified_user</span>
+              <h3 class="font-bold text-lg mb-2">An toàn tuyệt đối</h3>
+              <p class="text-secondary text-sm">Trang thiết bị đầy đủ và đội ngũ porter chuyên nghiệp.</p>
+            </div>
+          </div>
+        </div>
+        <div class="md:col-span-7 order-1 md:order-2">
+          <div class="space-y-6">
+            <h2 class="text-4xl md:text-5xl font-black text-primary tracking-tighter leading-tight">
+              Tiêu chuẩn mới trong <br /> thám hiểm đỉnh cao.
+            </h2>
+            <div class="w-20 h-1.5 bg-primary rounded-full"></div>
+            <p class="text-lg text-on-surface-variant leading-relaxed py-4">
+              Tại GoWithSu, không chỉ là một chuyến đi, mà là một hành trình thay đổi bản thân. Sự chọn chu thẻ hiện từ
+              thực đơn dinh dưỡng đến kỹ thuật di chuyển chuyên biệt cho từng địa hình.
+            </p>
+            <div class="grid grid-cols-2 gap-8 pt-4">
+              <div>
+                <div class="text-3xl font-black text-primary mb-1">95%</div>
+                <div class="text-sm font-bold text-secondary uppercase tracking-widest">Tỷ lệ hài lòng</div>
+              </div>
+              <div>
+                <div class="text-3xl font-black text-primary mb-1">1:3</div>
+                <div class="text-sm font-bold text-secondary uppercase tracking-widest">Tỷ lệ Guide/Khách</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section> -->
+  <!-- Tour Destinations -->
+  <section class="py-14 md:py-24 bg-surface" id="tour-list-section">
+    <div class="max-w-7xl mx-auto px-4 md:px-8">
+      <div class="flex justify-between items-end mb-8 md:mb-16">
+        <div>
+          <span class="text-primary font-bold tracking-[0.15em] uppercase text-xs mb-3 block">Featured
+            Expeditions</span>
+          <h2 class="text-3xl md:text-4xl font-black text-on-surface tracking-tighter">Hành Trình Khám Phá</h2>
+        </div>
+        <a href="/tours" class="hidden md:flex items-center gap-2 text-primary font-bold hover:gap-4 transition-all">
+          Xem tất cả tour <span class="material-symbols-outlined">arrow_forward</span>
+        </a>
+      </div>
+
+      <!-- Modern Card Grid (Bento style) -->
+      <div id="tour-list" class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-8"></div>
+    </div>
+  </section>
+
+  <!-- Upcoming schedule -->
+  <section class="py-14 md:py-24 bg-emerald-950" id="upcoming-schedule-section">
+    <div class="max-w-7xl mx-auto px-4 md:px-8">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-5 md:gap-6 mb-8 md:mb-12">
+        <div>
+          <span
+            class="inline-flex items-center gap-2 text-primary-fixed font-bold tracking-[0.15em] uppercase text-xs mb-3">
+            <span class="material-symbols-outlined text-sm"
+              style="font-variation-settings:'FILL' 1">calendar_month</span>
+            Lịch khởi hành
+          </span>
+          <h2 class="text-3xl md:text-4xl font-black text-white tracking-tighter">2 Tháng Tới</h2>
+          <p class="text-slate-400 mt-2 text-sm">Các chuyến đi đang chờ bạn đặt chỗ sớm để không lỡ hành trình.</p>
+        </div>
+        <a href="/tours"
+          class="hidden md:inline-flex items-center gap-2 border border-white/20 text-white/80 hover:text-white hover:border-white/50 px-5 py-2.5 rounded-full text-sm font-semibold transition-all">
+          Xem tất cả tour <span class="material-symbols-outlined text-base">arrow_forward</span>
+        </a>
+      </div>
+      <div id="upcoming-schedule">
+        <div class="py-10 text-center text-slate-500 text-sm">Đang tải lịch...</div>
+      </div>
+    </div>
+  </section>
+  <!-- Experience Quote -->
+  <section class="py-14 md:py-24 relative overflow-hidden">
+    <div class="absolute inset-0 bg-primary-container"></div>
+    <div class="absolute right-0 top-0 opacity-10">
+      <span class="material-symbols-outlined text-[400px] leading-none" data-weight="fill">landscape</span>
+    </div>
+    <div class="relative z-10 max-w-4xl mx-auto px-4 md:px-8 text-center">
+      <span class="material-symbols-outlined text-primary-fixed text-5xl md:text-6xl mb-6 md:mb-8">format_quote</span>
+      <blockquote
+        class="text-2xl md:text-5xl font-extrabold text-on-primary-container leading-tight mb-8 md:mb-12 tracking-tight">
+        "Less is more"
+      </blockquote>
+      <cite class="not-italic block">
+        <span class="text-white font-bold text-lg">- Anonymous -</span>
+      </cite>
+    </div>
+  </section>
+  <div id="shared-footer-mount"></div>
+  <a href="/booking"
+    class="mobile-go-fab fixed bottom-4 right-4 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary text-sm font-black uppercase tracking-wider text-on-primary shadow-[0_20px_40px_-18px_rgba(20,54,0,0.55)] transition-transform active:scale-95 md:hidden"
+    aria-label="Đặt tour ngay">
+    GO
+  </a>
+  <div id="shared-admin-dialog-mount"></div>
+  <script src="/shared-layout.js"></script>
+  <script src="/script.js"></script>
+  <script src="/mobile-nav.js"></script>
+  <script src="/nav-search.js"></script>
+</body>
+
+</html>
+

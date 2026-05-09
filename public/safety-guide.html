@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link href="/mobile-search.css" rel="stylesheet" />
+    <link href="/mobile-go.css" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#f8f9fa",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#f8f9fa",
+                        "tertiary-fixed": "#ffddb6",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-container-low": "#f3f4f5",
+                        "surface-container": "#edeeef",
+                        "secondary": "#48626e",
+                        "primary": "#143600",
+                        "on-background": "#191c1d",
+                        "surface-tint": "#43682c",
+                        "secondary-fixed-dim": "#afcbd8",
+                        "outline": "#73796c",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed-dim": "#a8d38a",
+                        "tertiary-fixed-dim": "#e6c093",
+                        "surface-dim": "#d9dadb",
+                        "secondary-fixed": "#cbe7f5",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#412a09",
+                        "on-tertiary-fixed-variant": "#5c421f",
+                        "inverse-surface": "#2e3132",
+                        "tertiary-container": "#5a401d",
+                        "surface-container-high": "#e7e8e9",
+                        "on-primary-fixed": "#092100",
+                        "on-tertiary-fixed": "#2a1800",
+                        "on-primary-fixed-variant": "#2c4f16",
+                        "on-secondary-fixed-variant": "#304a55",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#43493d",
+                        "on-secondary-container": "#4e6874",
+                        "surface-variant": "#e1e3e4",
+                        "secondary-container": "#cbe7f5",
+                        "inverse-primary": "#a8d38a",
+                        "outline-variant": "#c3c9b9",
+                        "on-secondary-fixed": "#021f29",
+                        "surface": "#f8f9fa",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#2a4d14",
+                        "on-surface": "#191c1d",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#d1ac80",
+                        "surface-container-highest": "#e1e3e4",
+                        "primary-fixed": "#c4efa4",
+                        "on-primary-container": "#94be78"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Be Vietnam Pro"],
+                        "display": ["Be Vietnam Pro"],
+                        "body": ["Be Vietnam Pro"],
+                        "label": ["Be Vietnam Pro"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .editorial-shadow {
+            box-shadow: 0 40px 80px -20px rgba(25, 28, 29, 0.04);
+        }
+
+        .misty-overlay {
+            backdrop-filter: blur(20px);
+            background: rgba(248, 249, 250, 0.8);
+        }
+    </style>
+</head>
+
+<body class="bg-background text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
+
+    <!-- TopNavBar (Shared Component) -->
+    <div id="shared-navbar-mount"></div>
+    <div id="shared-mobile-search-mount"></div>
+
+    <main class="relative">
+        <!-- Hero Section -->
+        <section class="relative h-[520px] md:h-[819px] flex items-center overflow-hidden">
+            <div class="absolute inset-0 z-0">
+                <div class="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent z-10">
+                </div>
+                <img class="w-full h-full object-cover object-center"
+                    data-alt="A breathtaking panoramic view of the majestic Himalayan mountain range at dawn. The peaks are illuminated by a soft, golden morning light that contrasts with the deep, cool shadows of the valleys. Wisps of alpine mist drift between the ridges, creating an ethereal, layered depth. The aesthetic is high-end editorial, emphasizing the vastness and raw beauty of nature, utilizing a color palette of pristine whites, slate grays, and deep forest greens."
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzqNaydzY8ivYZy2tHmyFAHv6QqsM_9oQ0KJ_I1hlv24cXVh4DZEbfWdXA_EB8-qeBGAEcF-bKr83wiYERjhwfShsoMBXdSyLT5kGlH1YrAWQVEo9Iojei199HH61VP3LkH_0-VT6jVduWWjnERsLH4q3FbXMHJeXYDzNL5DkI1hzcgAn98OsrqDnWCpaMInDZJG5gZeNfursueE5xXhitUOODrWEQhfsOqp24HVXznWC0xzqMvUmYjNHVdNDD44HdfsUnWWJKcYkc" />
+            </div>
+            <div class="container mx-auto px-4 md:px-8 relative z-20 max-w-5xl">
+                <span
+                    class="inline-block py-1 px-3 bg-primary-container text-on-primary-container rounded-full text-xs font-bold tracking-widest uppercase mb-6">Adventure
+                    Protocol</span>
+                <h1 class="text-4xl md:text-8xl font-black text-primary tracking-tighter mb-5 md:mb-8 leading-[0.95]">
+                    Trước khi bước vào rừng
+                </h1>
+                <p class="text-base md:text-2xl text-on-surface-variant max-w-xl font-light leading-relaxed">
+                    Hãy đọc điều này một lần để chuyến đi không trở thành rủi ro.
+                </p>
+            </div>
+        </section>
+        <!-- Warning Banner -->
+        <section class="px-4 md:px-8 -mt-12 md:-mt-20 relative z-30">
+            <div class="container mx-auto max-w-6xl">
+                <div
+                    class="bg-primary text-on-primary p-6 md:p-12 rounded-[1.25rem] md:rounded-[2rem] flex flex-col md:flex-row items-center gap-6 md:gap-12 editorial-shadow relative overflow-hidden">
+                    <div
+                        class="absolute top-0 right-0 w-64 h-64 bg-primary-container/20 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl">
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="text-2xl md:text-3xl font-bold mb-3 md:mb-4 tracking-tight">Trekking không nguy hiểm nếu bạn cẩn thận.</h2>
+                        <p class="text-on-primary/80 leading-relaxed text-sm md:text-lg">
+                            Dù là những cung đường thơ mộng như <span class="font-bold text-primary-fixed">Tà Năng -
+                                Phan Dũng</span> hay những đỉnh cao thử thách như <span
+                                class="font-bold text-primary-fixed">Pu Ta Leng</span>, núi rừng luôn ẩn chứa những bất
+                            ngờ mà chỉ sự chuẩn bị kỹ lưỡng mới có thể giúp bạn vượt qua.
+                        </p>
+                    </div>
+                    <div class="shrink-0">
+                        <span class="material-symbols-outlined text-[80px] opacity-20"
+                            style="font-variation-settings: 'FILL' 1;">warning</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Safety Principles - Bento Grid -->
+        <section class="py-14 md:py-32 px-4 md:px-8">
+            <div class="container mx-auto max-w-6xl">
+                <div class="mb-10 md:mb-20">
+                    <h2 class="text-3xl md:text-4xl font-black text-primary tracking-tighter uppercase">Nguyên tắc sinh tồn</h2>
+                    <div class="h-1 w-20 bg-primary-container mt-4"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    <!-- Principle 1 -->
+                    <div
+                        class="md:col-span-8 bg-surface-container-low p-6 md:p-10 rounded-[1.25rem] md:rounded-[2rem] flex flex-col justify-between group hover:bg-surface-container-lowest transition-all duration-500 cursor-default">
+                        <div class="flex items-start justify-between">
+                            <span class="text-5xl font-black text-primary-container/20">01</span>
+                            <span
+                                class="material-symbols-outlined text-4xl text-primary-container group-hover:scale-110 transition-transform">fitness_center</span>
+                        </div>
+                        <div class="mt-6 md:mt-12">
+                            <h3 class="text-2xl font-bold text-primary mb-3">Đừng đánh giá sai độ khó</h3>
+                            <p class="text-on-surface-variant leading-relaxed">Know your limits. Đừng chọn cung đường 5
+                                sao khi thể lực của bạn đang ở mức làm quen. Mệt mỏi chỉ là một phần khởi đầu của mọi sự
+                                cố.</p>
+                        </div>
+                    </div>
+                    <!-- Principle 2 -->
+                    <div
+                        class="md:col-span-4 bg-tertiary-container text-on-tertiary-container p-6 md:p-10 rounded-[1.25rem] md:rounded-[2rem] flex flex-col justify-between">
+                        <span class="material-symbols-outlined text-4xl"
+                            style="font-variation-settings: 'FILL' 1;">thunderstorm</span>
+                        <div class="mt-12">
+                            <h3 class="text-2xl font-bold mb-3">Thời tiết là số 1</h3>
+                            <p class="opacity-80">Kiểm tra dự báo thời tiết ít nhất 2-3 ngày trước khi khởi hành. Nếu có
+                                bão, rừng không phải là nơi để trú ẩn.</p>
+                        </div>
+                    </div>
+                    <!-- Principle 3 -->
+                    <div class="md:col-span-4 bg-secondary-container p-6 md:p-10 rounded-[1.25rem] md:rounded-[2rem] flex flex-col justify-between">
+                        <span class="material-symbols-outlined text-4xl text-on-secondary-container">groups</span>
+                        <div class="mt-12">
+                            <h3 class="text-xl font-bold text-on-secondary-container mb-3">Không đi một mình</h3>
+                            <p class="text-on-secondary-container/80 text-sm">Mandatory local guides. Đặc biệt ở những
+                                cung đường phức tạp, người bản địa là kho tàng kinh nghiệm sống còn.</p>
+                        </div>
+                    </div>
+                    <!-- Principle 4 -->
+                    <div
+                        class="md:col-span-4 bg-surface-container-high p-6 md:p-10 rounded-[1.25rem] md:rounded-[2rem] flex flex-col justify-between">
+                        <span class="material-symbols-outlined text-4xl text-primary">explore</span>
+                        <div class="mt-12">
+                            <h3 class="text-xl font-bold text-primary mb-3">Phương án định vị</h3>
+                            <p class="text-on-surface-variant text-sm">Offline maps &amp; GPS tracks là bắt buộc. Đừng
+                                tin tưởng tuyệt đối vào sóng điện thoại giữa thung lũng.</p>
+                        </div>
+                    </div>
+                    <!-- Principle 5 -->
+                    <div
+                        class="md:col-span-4 bg-primary-container text-on-primary-container p-6 md:p-10 rounded-[1.25rem] md:rounded-[2rem] flex flex-col justify-between">
+                        <span class="material-symbols-outlined text-4xl">water_drop</span>
+                        <div class="mt-12">
+                            <h3 class="text-xl font-bold mb-3">Nước &amp; Năng lượng</h3>
+                            <p class="opacity-80 text-sm">2-3L nước mỗi ngày. Thiếu nước dần dần kiệt sức và ảo giác.
+                                Năng lượng là sự sinh tồn.</p>
+                        </div>
+                    </div>
+                    <!-- Principle 6 -->
+                    <div class="md:col-span-7 bg-surface-container-low p-6 md:p-10 rounded-[1.25rem] md:rounded-[2rem] flex items-center gap-5 md:gap-8">
+                        <div class="shrink-0 bg-white p-6 rounded-3xl shadow-sm">
+                            <span class="material-symbols-outlined text-4xl text-primary">medical_services</span>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-primary mb-2">Trang bị chuyên dụng</h3>
+                            <p class="text-on-surface-variant">Giày trekking, áo mưa/áo gió, đèn đội đầu và bộ sơ cứu. Trang bị không phải
+                                để 'cho có', nó là lớp bảo vệ cuối cùng của bạn.</p>
+                        </div>
+                    </div>
+                    <!-- Principle 7 -->
+                    <div
+                        class="md:col-span-5 bg-white p-6 md:p-10 rounded-[1.25rem] md:rounded-[2rem] border border-outline-variant/10 flex flex-col justify-center">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span
+                                class="w-12 h-12 bg-error-container text-on-error-container rounded-full flex items-center justify-center font-bold">!</span>
+                            <h3 class="text-xl font-bold text-primary">Biết dừng đúng lúc</h3>
+                        </div>
+                        <p class="text-on-surface-variant text-sm italic">"Đỉnh núi chỉ là tùy chọn, nhưng trở về là bắt
+                            buộc." Hãy lắng nghe cơ thể và quay đầu khi cần thiết.</p>
+                    </div>
+                    <!-- Principle 8 -->
+                    <div
+                        class="md:col-span-12 bg-primary text-on-primary p-6 md:p-12 rounded-[1.25rem] md:rounded-[2rem] flex flex-col md:flex-row items-center gap-6 md:gap-12 overflow-hidden relative">
+                        <div class="relative z-10">
+                            <h3 class="text-3xl font-black mb-4 tracking-tighter">Tôn trọng thiên nhiên</h3>
+                            <p class="text-on-primary/70 max-w-2xl leading-relaxed">
+                                Leave No Trace. Chúng ta là khách của rừng xanh. Hãy giữ nguyên trạng thái hoang sơ vốn
+                                có, không mang gì đi ngoài những bức ảnh, không để lại gì ngoài những bước chân.
+                            </p>
+                        </div>
+                        <div class="ml-auto relative z-10 shrink-0 border-4 border-primary-fixed/30 rounded-full p-8">
+                            <span class="material-symbols-outlined text-[64px]"
+                                style="font-variation-settings: 'FILL' 1;">eco</span>
+                        </div>
+                        <div class="absolute -bottom-10 -right-10 opacity-10">
+                            <span class="material-symbols-outlined text-[300px]">forest</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Closing Quote Section -->
+        <section class="py-14 md:py-32 bg-surface-container-low overflow-hidden relative">
+            <div class="container mx-auto px-4 md:px-8 text-center max-w-4xl relative z-10">
+                <span class="material-symbols-outlined text-primary-container text-6xl mb-8">format_quote</span>
+                <blockquote
+                    class="text-2xl md:text-5xl font-display font-light text-primary leading-tight tracking-tight mb-8 md:mb-12">
+                    "Sự an toàn không phải là rào cản của cuộc phiêu lưu, mà chính là nền tảng để bạn tận hưởng vẻ đẹp
+                    của thế giới một cách trọn vẹn nhất."
+                </blockquote>
+                <div class="flex flex-col items-center gap-8">
+                    <a href="/tours"
+                        class="bg-primary text-on-primary px-8 md:px-12 py-4 md:py-6 rounded-full font-bold text-base md:text-lg hover:scale-105 active:scale-95 transition-all editorial-shadow flex items-center gap-2 md:gap-3">
+                        Khám phá ngay
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </a>
+                    <p class="text-on-surface-variant font-label text-sm tracking-widest uppercase">GoWithSu -
+                        AN TOÀN LÀ TRÊN HẾT</p>
+                </div>
+            </div>
+            <!-- Abstract background elements -->
+            <div class="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20">
+                <div class="absolute -top-24 -left-24 w-96 h-96 bg-primary-container rounded-full blur-[100px]"></div>
+                <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-secondary-container rounded-full blur-[100px]">
+                </div>
+            </div>
+        </section>
+        <!-- Footer -->
+        <div id="shared-footer-mount"></div>
+    </main>
+    <!-- Floating Action Button Contextual (Hidden on safety page as per mandate) -->
+
+    <script src="/shared-layout.js"></script>
+    <script src="/mobile-nav.js"></script>
+    <script src="/nav-search.js"></script>
+    <script>
+        document.querySelectorAll('[data-discover-tour-link]').forEach((link) => {
+            link.addEventListener('click', async (event) => {
+                event.preventDefault();
+                try {
+                    const res = await fetch('/api/discover/random-tour');
+                    if (!res.ok) { window.location.href = '/#tour-list-section'; return; }
+                    const tour = await res.json();
+                    window.location.href = (tour && tour.href) ? tour.href : '/#tour-list-section';
+                } catch (_) {
+                    window.location.href = '/#tour-list-section';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
+

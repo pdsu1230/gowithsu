@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng Sử | Quản Trị</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+      <link rel="stylesheet" href="/tailwind.css?v=20260422-1" />
+  </head>
+  <body class="admin-body">
+    <main class="container admin-shell">
+      <header class="admin-header">
+        <div>
+          <p class="eyebrow">Bảng Điều Khiển</p>
+          <h1>Quản lý tour và booking</h1>
+        </div>
+        <div class="site-nav__actions">
+          <a class="btn btn-secondary" href="/">Về trang đặt tour</a>
+          <button id="admin-logout-btn" class="btn btn-ghost" type="button">Đăng xuất</button>
+        </div>
+      </header>
+
+      <section class="admin-grid">
+        <div class="panel">
+          <div class="section-heading section-heading--compact">
+            <h2>Quản lý tour</h2>
+            <p>Thêm, sửa, xóa tour cố định.</p>
+          </div>
+          <form id="tour-form" class="form-stack">
+            <input type="hidden" id="tour_form_id" />
+            <label>
+              Tên tour
+              <input type="text" id="tour_title" required />
+            </label>
+            <div class="grid-two">
+              <label>
+                Địa điểm
+                <input type="text" id="tour_location" />
+              </label>
+              <label>
+                Thời lượng
+                <input type="text" id="tour_duration" />
+              </label>
+              <label>
+                Độ khó
+                <input type="text" id="tour_difficulty" />
+              </label>
+            </div>
+            <label>
+              Mô tả
+              <textarea id="tour_description" rows="4"></textarea>
+            </label>
+            <div class="actions-row">
+              <button type="submit" class="btn">Lưu tour</button>
+              <button type="button" id="tour-reset-btn" class="btn btn-ghost">Tạo mới</button>
+              <p id="tour-status" class="form-status"></p>
+            </div>
+          </form>
+          <div id="tour-admin-list" class="admin-list"></div>
+        </div>
+
+        <div class="panel">
+          <div class="section-heading section-heading--compact">
+            <h2>Booking theo ngày</h2>
+            <p>Danh sách chuyến đi, Danh sách thành viên, xuất Excel.</p>
+          </div>
+          <div class="actions-row actions-row--space-between">
+            <button id="export-week-btn" class="btn btn-secondary" type="button">Xuất Excel</button>
+            <p id="booking-status" class="form-status"></p>
+          </div>
+          <div id="booking-groups" class="booking-groups"></div>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="member-dialog" class="member-dialog">
+      <div class="member-dialog__header">
+        <h3 id="member-dialog-title">Thành viên booking</h3>
+        <button id="member-dialog-close" class="btn btn-ghost btn-icon" type="button" aria-label="Đóng" title="Đóng">&times;</button>
+      </div>
+      <div id="member-dialog-body" class="member-dialog__body"></div>
+    </dialog>
+
+    <script src="/admin.js"></script>
+  </body>
+</html>

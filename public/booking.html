@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html class="light" lang="vi">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Thông tin thành viên tham gia tour | GoWithSu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="/mobile-search.css" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          'on-surface-variant': '#43493d', 'inverse-on-surface': '#f0f1f2', 'on-tertiary-fixed': '#2a1800',
+          'on-primary': '#ffffff', 'surface-container-high': '#e7e8e9', 'on-error-container': '#93000a',
+          'tertiary-fixed-dim': '#e6c093', 'surface-tint': '#43682c', 'primary-container': '#2a4d14',
+          'on-background': '#191c1d', 'secondary': '#48626e', 'on-surface': '#191c1d', 'inverse-surface': '#2e3132',
+          'inverse-primary': '#a8d38a', 'surface-variant': '#e1e3e4', 'surface-bright': '#f8f9fa',
+          'on-secondary-container': '#4e6874', 'on-tertiary': '#ffffff', 'on-primary-fixed-variant': '#2c4f16',
+          'on-secondary-fixed': '#021f29', 'on-error': '#ffffff', 'surface-dim': '#d9dadb', 'outline': '#73796c',
+          'surface-container-low': '#f3f4f5', 'on-secondary': '#ffffff', 'surface-container-lowest': '#ffffff',
+          'surface-container': '#edeeef', 'surface': '#f8f9fa', 'secondary-fixed-dim': '#afcbd8',
+          'secondary-container': '#cbe7f5', 'on-tertiary-fixed-variant': '#5c421f', 'on-tertiary-container': '#d1ac80',
+          'error-container': '#ffdad6', 'tertiary-fixed': '#ffddb6', 'tertiary': '#412a09', 'primary-fixed-dim': '#a8d38a',
+          'outline-variant': '#c3c9b9', 'background': '#f8f9fa', 'on-secondary-fixed-variant': '#304a55',
+          'surface-container-highest': '#e1e3e4', 'error': '#ba1a1a', 'secondary-fixed': '#cbe7f5', 'on-primary-fixed': '#092100',
+          'on-primary-container': '#94be78', 'tertiary-container': '#5a401d', 'primary': '#143600', 'primary-fixed': '#c4efa4'
+        }
+      }
+    }
+  };
+</script>
+<style>
+  body { font-family: 'Be Vietnam Pro', sans-serif; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+  input[type='checkbox']:checked { background-color: #143600; border-color: transparent; }
+  .medal-name-field--inactive { opacity: 0; visibility: hidden; pointer-events: none; }
+  #tour_id { background-image: none !important; }
+
+  @media (max-width: 767px) {
+    #booking-form input:not([type='checkbox']),
+    #booking-form select,
+    #booking-form textarea {
+      background: #ffffff !important;
+      border: 1px solid #dce2d7 !important;
+      border-radius: 0.85rem !important;
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9), 0 10px 24px -22px rgba(15, 23, 42, 0.5);
+    }
+
+    #booking-form input:not([type='checkbox']),
+    #booking-form select {
+      min-height: 3rem;
+    }
+
+    #members-container [data-member-card] {
+      border-left: 0 !important;
+    }
+  }
+</style>
+</head>
+<body class="bg-surface text-on-surface">
+<div id="shared-navbar-mount"></div>
+<div id="shared-mobile-search-mount"></div>
+
+<header class="pt-24 md:pt-32 pb-8 md:pb-16 bg-surface-container-low px-4 md:px-8 overflow-hidden relative border-b border-slate-200/70">
+  <div class="max-w-7xl mx-auto relative z-10">
+    <h1 class="text-3xl md:text-6xl font-extrabold text-primary tracking-tighter leading-tight mb-3 md:mb-4">Thông tin thành viên <br/>tham gia tour</h1>
+    <p class="text-on-surface-variant max-w-2xl text-sm md:text-lg leading-relaxed">Hành trình chinh phục những đỉnh cao bắt đầu từ đây. Hãy cung cấp thông tin chính xác để GoWithSu chuẩn bị tốt nhất cho trải nghiệm của bạn.</p>
+  </div>
+  <div class="absolute top-0 right-0 hidden h-full w-1/3 opacity-10 md:block">
+    <img alt="Decorative mountain peaks" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCP7OjDbCItX6c6uacEL1FuWc3HqSu4podYo642wQV0XekOI_YqaxjQrFnifzUnsOSK9gCJgZ6siOApuU_Qb0DdTp2WzPdmKRdgRMidvH554uvC8BzO8z7m-AGlJnXswxFP7nw0xSHqpHvLlobbVwbhkYudRVBDczIU51Mylzrft72BiCW2cVzHmn3XpvpNUnZrUAXAEe3uUyUxO-Mpf5v13esXeTObSJ7I5ptRd1atsT_ZgIFL-ux9UQCeqnVMvvMS1vwb8aSM1dr1"/>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-12">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12 items-start">
+    <section class="lg:col-span-2 space-y-8">
+      <form id="booking-form" class="space-y-8">
+        <div class="bg-surface-container-lowest rounded-2xl border border-slate-200/80 p-5 md:p-8 shadow-sm">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
+            <div class="space-y-2">
+              <label class="block text-sm font-bold uppercase tracking-widest text-on-surface-variant" for="tour_id">Chọn tour</label>
+              <div class="relative">
+                <select id="tour_id" name="tour_id" required class="w-full bg-surface-container-low border-none rounded-lg py-3 pl-4 pr-12 text-on-surface appearance-none focus:ring-2 focus:ring-primary/20"></select>
+                <span aria-hidden="true" class="material-symbols-outlined pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[20px] text-on-surface-variant/70">expand_more</span>
+              </div>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-bold uppercase tracking-widest text-on-surface-variant" for="start_date">Ngày khởi hành</label>
+              <input id="start_date" name="start_date" required class="w-full bg-surface-container-low border-none rounded-lg py-3 px-4 text-on-surface focus:ring-2 focus:ring-primary/20" type="date"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-3 pt-2 md:flex-row md:items-center md:justify-between md:pt-4">
+          <h2 class="text-xl md:text-2xl font-bold text-primary flex items-center gap-2 md:gap-3"><span class="material-symbols-outlined">group</span>Thành viên booking</h2>
+          <button id="add-member-btn" type="button" class="flex w-full items-center justify-center gap-1.5 rounded-full bg-primary-container px-4 py-2.5 text-sm font-semibold text-on-primary-container transition-transform active:scale-95 md:w-auto md:gap-2 md:px-6 md:text-base">
+            <span class="material-symbols-outlined text-xl">add_circle</span>Thêm thành viên
+          </button>
+        </div>
+
+        <div id="members-container" class="space-y-5 md:space-y-6"></div>
+
+        <div class="pt-6 md:pt-8 border-t border-surface-container-highest">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="flex items-center gap-4 text-on-surface-variant">
+              <span class="material-symbols-outlined text-primary text-3xl">info</span>
+              <p class="text-sm leading-relaxed">Bằng cách nhấn Booking, bạn đồng ý với các điều khoản và chính sách an toàn của GoWithSu.</p>
+            </div>
+            <div class="flex w-full flex-col items-stretch gap-2 md:w-auto md:items-end">
+              <button type="submit" class="w-full rounded-full bg-primary px-8 py-3.5 text-center text-base font-bold text-on-primary shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95 md:w-auto md:px-12 md:py-4 md:text-lg">Booking</button>
+              <p id="form-status" class="min-h-6 text-sm font-semibold text-primary" aria-live="polite"></p>
+            </div>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <aside class="space-y-6 md:space-y-8 lg:sticky lg:top-28">
+      <div class="bg-surface-container-lowest rounded-2xl border border-slate-200/80 p-5 md:p-8 shadow-sm">
+        <h3 class="text-xl font-bold text-primary mb-6 flex items-center gap-2"><span class="material-symbols-outlined">lightbulb</span>Hướng dẫn</h3>
+        <ul class="space-y-6">
+          <li class="flex gap-4"><span class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-sm flex-shrink-0">1</span><p class="text-sm text-on-surface-variant leading-relaxed">Cung cấp thông tin CCCD chính xác để ban quản lý rừng làm thủ tục cấp phép vào rừng.</p></li>
+          <li class="flex gap-4"><span class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-sm flex-shrink-0">2</span><p class="text-sm text-on-surface-variant leading-relaxed">Hãy trung thực về tình trạng sức khỏe. Điều này giúp chúng tôi bố trí porter hỗ trợ tốt nhất.</p></li>
+          <li class="flex gap-4"><span class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-sm flex-shrink-0">3</span><p class="text-sm text-on-surface-variant leading-relaxed">Huy chương kỷ niệm sẽ được trao tại đỉnh hoặc trong tiệc liên hoan cuối hành trình.</p></li>
+        </ul>
+      </div>
+      <div class="bg-tertiary-container text-on-tertiary-container rounded-2xl p-5 md:p-8">
+        <div class="flex items-center gap-3 mb-4"><span class="material-symbols-outlined">schedule</span><h4 class="font-bold">Lưu ý xác nhận</h4></div>
+        <p class="text-sm opacity-90 leading-relaxed mb-6">Sau khi nhận được thông tin, GoWithSu sẽ liên hệ xác nhận qua điện thoại và tin nhắn hướng dẫn chuẩn bị trong vòng 12h làm việc.</p>
+        <div class="pt-4 border-t border-on-tertiary-container/10"><p class="text-xs font-bold uppercase tracking-widest opacity-60 mb-2">Hỗ trợ 24/7</p><p class="text-lg font-black">033 6692 307</p></div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<template id="member-template">
+  <section data-member-card class="bg-surface-container-lowest rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-6 md:space-y-8 md:p-8">
+    <div class="flex items-center justify-between">
+      <h3 class="text-lg font-bold text-on-surface">Thành viên #<span class="member-order"></span></h3>
+      <button type="button" class="remove-member-btn flex items-center gap-1 text-sm font-semibold text-error transition-opacity hover:opacity-70"><span class="material-symbols-outlined text-lg">delete</span>Xóa</button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-2"><label class="text-xs font-bold uppercase tracking-wider text-outline">Họ và tên *</label><input name="name" required class="w-full bg-surface-container-low border-none rounded-lg py-3 px-4 focus:ring-2 focus:ring-primary/20" type="text"/></div>
+      <div class="space-y-2"><label class="text-xs font-bold uppercase tracking-wider text-outline">Ngày sinh *</label><input name="dob" class="w-full bg-surface-container-low border-none rounded-lg py-3 px-4 focus:ring-2 focus:ring-primary/20" type="date"/></div>
+      <div class="space-y-2"><label class="text-xs font-bold uppercase tracking-wider text-outline">Số CCCD/Passport *</label><input name="cccd" class="w-full bg-surface-container-low border-none rounded-lg py-3 px-4 focus:ring-2 focus:ring-primary/20" type="text"/></div>
+      <div class="space-y-2"><label class="text-xs font-bold uppercase tracking-wider text-outline">Số điện thoại *</label><input name="phone" class="w-full bg-surface-container-low border-none rounded-lg py-3 px-4 focus:ring-2 focus:ring-primary/20" type="tel"/></div>
+      <div class="md:col-span-2 space-y-2"><label class="text-xs font-bold uppercase tracking-wider text-outline">Địa chỉ thường trú *</label><input name="address" class="w-full bg-surface-container-low border-none rounded-lg py-3 px-4 focus:ring-2 focus:ring-primary/20" type="text"/></div>
+      <div class="md:col-span-2 space-y-2"><label class="text-xs font-bold uppercase tracking-wider text-outline">Tiểu sử bệnh nền (nếu có)</label><textarea name="medical_note" rows="2" class="w-full bg-surface-container-low border-none rounded-lg py-3 px-4 focus:ring-2 focus:ring-primary/20"></textarea></div>
+    </div>
+    <div class="p-6 bg-surface-container rounded-xl space-y-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+          <div><p class="font-bold">Nhận huy chương lưu niệm</p><p class="text-sm text-on-surface-variant">Sản phẩm độc quyền từ GoWithSu</p></div>
+        </div>
+        <input type="checkbox" name="medal" class="h-5 w-5 rounded border-outline-variant text-primary focus:ring-primary"/>
+      </div>
+      <div class="medal-name-field medal-name-field--inactive space-y-2">
+        <label class="text-xs font-bold uppercase tracking-wider text-outline">Tên khắc trên medal</label>
+        <input name="medal_name" class="w-full bg-surface-container-low border-none rounded-lg py-3 px-4 focus:ring-2 focus:ring-primary/20" type="text"/>
+      </div>
+    </div>
+    <div class="space-y-4">
+      <p class="text-sm font-bold uppercase tracking-widest text-on-surface-variant">Muốn thiết bị (Miễn phí)</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <label class="flex items-center gap-3 p-4 bg-surface rounded-lg cursor-pointer transition-colors hover:bg-primary-container/10"><input name="borrow_bag" class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/><span class="text-sm font-medium">Balo 20L</span></label>
+        <label class="flex items-center gap-3 p-4 bg-surface rounded-lg cursor-pointer transition-colors hover:bg-primary-container/10"><input name="borrow_headlamp" class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/><span class="text-sm font-medium">Đèn đội đầu</span></label>
+        <label class="flex items-center gap-3 p-4 bg-surface rounded-lg cursor-pointer transition-colors hover:bg-primary-container/10"><input name="borrow_trekking_pole" class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/><span class="text-sm font-medium">Gậy trekking</span></label>
+      </div>
+    </div>
+  </section>
+</template>
+
+<div id="shared-admin-dialog-mount"></div>
+
+<dialog id="booking-success-dialog" class="fixed inset-0 m-auto w-full max-w-[520px] rounded-2xl border-none p-0">
+  <div class="grid gap-5 rounded-2xl bg-white p-8 shadow-xl">
+    <div class="flex items-start justify-between gap-4">
+      <div><p class="text-xs font-bold uppercase tracking-[0.15em] text-primary">Xác nhận Booking</p><h3 class="text-2xl font-extrabold text-primary">Booking thành công</h3></div>
+      <button id="booking-success-close-btn" type="button" class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-700">&times;</button>
+    </div>
+    <p id="booking-success-message" class="text-on-surface-variant">Booking thành công, chúng mình sẽ liên hệ với bạn sớm.</p>
+    <div class="flex justify-end"><button id="booking-success-confirm-btn" type="button" class="rounded-xl bg-primary px-5 py-2.5 font-bold text-white">Đã hiểu</button></div>
+  </div>
+</dialog>
+
+<div id="shared-footer-mount"></div>
+
+<script src="/shared-layout.js"></script>
+<script src="/booking.js?v=20260423-1"></script>
+<script src="/mobile-nav.js"></script>
+<script src="/nav-search.js"></script>
+</body>
+</html>
+
+

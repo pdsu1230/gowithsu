@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html class="light" lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng Sử | Quản Trị Tour</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-primary-fixed": "#092100",
+            "background": "#f8f9fa",
+            "surface-container-lowest": "#ffffff",
+            "surface-container": "#edeeef",
+            "primary-container": "#2a4d14",
+            "on-tertiary-fixed": "#2a1800",
+            "surface-bright": "#f8f9fa",
+            "on-primary": "#ffffff",
+            "tertiary-container": "#5a401d",
+            "outline": "#73796c",
+            "on-secondary-container": "#4e6874",
+            "surface-container-highest": "#e1e3e4",
+            "primary": "#143600",
+            "error": "#ba1a1a",
+            "on-tertiary-fixed-variant": "#5c421f",
+            "on-background": "#191c1d",
+            "secondary-fixed": "#cbe7f5",
+            "secondary-container": "#cbe7f5",
+            "on-primary-fixed-variant": "#2c4f16",
+            "tertiary-fixed": "#ffddb6",
+            "secondary": "#48626e",
+            "surface": "#f8f9fa",
+            "surface-container-high": "#e7e8e9",
+            "on-secondary": "#ffffff",
+            "on-tertiary-container": "#d1ac80",
+            "primary-fixed-dim": "#a8d38a",
+            "secondary-fixed-dim": "#afcbd8",
+            "surface-container-low": "#f3f4f5",
+            "on-secondary-fixed": "#021f29",
+            "inverse-surface": "#2e3132",
+            "outline-variant": "#c3c9b9",
+            "on-surface-variant": "#43493d",
+            "on-error-container": "#93000a",
+            "error-container": "#ffdad6",
+            "on-surface": "#191c1d",
+            "inverse-on-surface": "#f0f1f2",
+            "surface-variant": "#e1e3e4",
+            "on-tertiary": "#ffffff",
+            "inverse-primary": "#a8d38a",
+            "tertiary": "#412a09",
+            "surface-dim": "#d9dadb",
+            "primary-fixed": "#c4efa4",
+            "on-secondary-fixed-variant": "#304a55",
+            "on-error": "#ffffff"
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body { font-family: 'Be Vietnam Pro', sans-serif; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    #tour-admin-list .list-card { overflow: hidden; }
+    #tour-admin-list .list-card__content { min-width: 0; }
+    #tour-admin-list .list-card__title {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    #tour-admin-list .list-card__meta {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    #tour-admin-list .list-card__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 1rem;
+    }
+    #tour-admin-list .list-card__price-note {
+      display: block;
+      margin-top: 0.15rem;
+      font-size: 0.72rem;
+      color: #94a3b8;
+    }
+    #tour-admin-list .list-card__actions .btn {
+      display: inline-flex;
+      height: 2.5rem;
+      width: 2.5rem;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      transition: transform 180ms ease, background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+    }
+    #tour-admin-list .list-card__actions .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
+    }
+    #tour-admin-list .tour-edit-btn {
+      background: linear-gradient(180deg, #f3f9ef 0%, #e6f1dd 100%);
+      color: #143600;
+      border-color: rgba(20, 54, 0, 0.12);
+    }
+    #tour-admin-list .tour-edit-btn:hover { background: #143600; color: #ffffff; }
+    #tour-admin-list .tour-delete-btn { background: linear-gradient(180deg, #fff1ef 0%, #ffdad6 100%); color: #93000a; }
+    #tour-admin-list .tour-delete-btn:hover { background: #ba1a1a; color: #ffffff; }
+    @media (min-width: 768px) {
+      #tour-admin-list .list-card {
+        display: grid;
+        grid-template-columns: 13rem minmax(0, 1fr);
+      }
+      #tour-admin-list .list-card__image {
+        height: auto;
+        min-height: 15rem;
+        width: 13rem;
+        flex-shrink: 0;
+      }
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background selection:bg-primary-fixed selection:text-primary overflow-x-hidden">
+  <div id="admin-sidebar-mount"></div>
+
+  <main class="ml-64 min-h-screen">
+    <header class="sticky top-0 z-40 flex w-full items-center justify-between bg-slate-50/80 px-8 py-4 font-['Be_Vietnam_Pro'] tracking-tight shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] backdrop-blur-xl antialiased">
+      <div class="flex items-center gap-4">
+        <h2 class="text-lg font-bold tracking-tighter text-[#143600]">Quản lý Tour</h2>
+        <span class="rounded-full bg-surface-container-high px-3 py-1 text-xs font-bold uppercase tracking-wider text-on-secondary-container">Kho tour đang hoạt động</span>
+      </div>
+      <div class="flex items-center gap-6">
+        <div class="relative">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">search</span>
+          <input id="tour-search" class="w-64 rounded-full border-none bg-white py-2 pl-10 pr-4 text-sm transition-all focus:ring-2 focus:ring-primary/10" placeholder="Tìm kiếm tour..." type="text" />
+        </div>
+        
+      </div>
+    </header>
+
+    <div class="px-8 py-8 space-y-8">
+      <section class="grid grid-cols-3 gap-4">
+        <div class="rounded-2xl border border-primary/10 bg-white p-5 shadow-sm">
+          <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Tour đang hoạt động</p>
+          <p id="stat-tour-count" class="mt-1.5 text-3xl font-black text-primary">—</p>
+        </div>
+        <div class="rounded-2xl border border-primary/10 bg-white p-5 shadow-sm">
+          <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Tổng sức chứa</p>
+          <p id="stat-total-capacity" class="mt-1.5 text-3xl font-black text-primary">—</p>
+        </div>
+        <div class="rounded-2xl border border-primary/10 bg-white p-5 shadow-sm">
+          <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Đã đặt chỗ</p>
+          <p id="stat-total-booked" class="mt-1.5 text-3xl font-black text-primary">—</p>
+        </div>
+      </section>
+
+      <section class="space-y-5">
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <h3 class="text-2xl font-black tracking-tight text-primary">Danh sách Tour</h3>
+            <p class="mt-1 text-sm text-slate-500">Quản lý và giám sát toàn bộ hành trình.</p>
+          </div>
+          <p id="tour-status" class="text-sm font-semibold text-primary"></p>
+        </div>
+        <div id="tour-admin-list" class="grid grid-cols-1 gap-4 xl:grid-cols-2"></div>
+      </section>
+    </div>
+
+    <div id="admin-footer-mount"></div>
+  </main>
+
+  <dialog id="tour-edit-dialog" class="fixed inset-0 m-auto h-[min(92vh,1100px)] w-[min(1100px,96vw)] overflow-hidden rounded-[30px] border-none bg-transparent p-0">
+    <div class="hide-scrollbar h-full overflow-y-auto rounded-[30px] bg-surface-container-low p-1 md:p-10 shadow-[0_30px_90px_rgba(23,40,14,0.2)]">
+      <div class="mx-auto max-w-5xl rounded-[28px] bg-surface-container-low p-1 md:p-6">
+        <div class="mb-12 flex items-start justify-between gap-6">
+          <div>
+            <div class="mb-4 flex items-center gap-2">
+              <span class="h-1 w-8 rounded-full bg-primary"></span>
+              <span class="text-sm font-black uppercase tracking-widest text-primary">Bộ công cụ Quản lý</span>
+            </div>
+            <h3 class="text-4xl font-black text-primary">Chi Tiết Hành trình</h3>
+            <p class="mt-4 text-lg text-slate-600">Quản lý mọi chi tiết của chuyến đi.</p>
+          </div>
+          <button id="tour-dialog-close" class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white text-slate-700 shadow-sm transition hover:bg-slate-100" type="button" aria-label="Đóng" title="Đóng">&times;</button>
+        </div>
+
+        <form id="tour-form" class="grid grid-cols-1 gap-x-12 gap-y-8 md:grid-cols-2">
+          <input type="hidden" id="tour_form_id" />
+
+          <div class="space-y-8">
+            <label class="flex flex-col gap-2">
+              <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Tên hành trình</span>
+              <input id="tour_title" class="rounded-xl bg-surface-container-lowest p-4 text-sm shadow-sm transition-all focus:ring-2 focus:ring-primary/20" placeholder="VD: Majestic Dolomite Traverse" type="text" required />
+            </label>
+
+            <label class="flex flex-col gap-2">
+              <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Địa điểm</span>
+              <input id="tour_location" class="rounded-xl bg-surface-container-lowest p-4 text-sm shadow-sm transition-all focus:ring-2 focus:ring-primary/20" placeholder="VD: Sơn La, Lào Cai..." type="text" />
+            </label>
+
+            <fieldset class="flex flex-col gap-4">
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-500">Danh mục hành trình</legend>
+              <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
+                <label class="cursor-pointer">
+                  <input checked class="peer hidden" name="tour_category" type="radio" value="TREKKING" />
+                  <div class="rounded-xl border-2 border-transparent bg-white p-3 text-center text-xs font-bold transition-all peer-checked:border-primary peer-checked:bg-primary-fixed-dim/10">Trekking</div>
+                </label>
+                <label class="cursor-pointer">
+                  <input class="peer hidden" name="tour_category" type="radio" value="BIỂN" />
+                  <div class="rounded-xl border-2 border-transparent bg-white p-3 text-center text-xs font-bold transition-all peer-checked:border-primary peer-checked:bg-primary-fixed-dim/10">Biển</div>
+                </label>
+                <label class="cursor-pointer">
+                  <input class="peer hidden" name="tour_category" type="radio" value="HIKING" />
+                  <div class="rounded-xl border-2 border-transparent bg-white p-3 text-center text-xs font-bold transition-all peer-checked:border-primary peer-checked:bg-primary-fixed-dim/10">Hiking</div>
+                </label>
+                <label class="cursor-pointer">
+                  <input class="peer hidden" name="tour_category" type="radio" value="ROAD TRIP" />
+                  <div class="rounded-xl border-2 border-transparent bg-white p-3 text-center text-xs font-bold transition-all peer-checked:border-primary peer-checked:bg-primary-fixed-dim/10">Road Trip</div>
+                </label>
+              </div>
+            </fieldset>
+
+            <div class="grid grid-cols-2 gap-4">
+              <label class="flex flex-col gap-2">
+                <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Thời lượng</span>
+                <select id="tour_duration" class="rounded-xl bg-surface-container-lowest p-4 text-sm shadow-sm focus:ring-2 focus:ring-primary/20" required>
+                  <option value="1 ngày">1 ngày</option>
+                  <option value="2 ngày">2 ngày</option>
+                  <option value="3 ngày">3 ngày</option>
+                  <option value="4 ngày">4 ngày</option>
+                  <option value="5 ngày">5 ngày</option>
+                </select>
+              </label>
+              <fieldset class="flex flex-col gap-2">
+                <legend class="text-xs font-bold uppercase tracking-widest text-slate-500">Độ khó</legend>
+                <div class="flex h-full items-center gap-2">
+                  <label class="flex-1"><input checked class="peer hidden" name="tour_difficulty" type="radio" value="Dễ" /><div class="rounded-lg bg-white p-2 text-center text-[10px] font-bold transition-all peer-checked:bg-primary peer-checked:text-white">Dễ</div></label>
+                  <label class="flex-1"><input class="peer hidden" name="tour_difficulty" type="radio" value="Trung Bình" /><div class="rounded-lg bg-white p-2 text-center text-[10px] font-bold transition-all peer-checked:bg-primary peer-checked:text-white">TB</div></label>
+                  <label class="flex-1"><input class="peer hidden" name="tour_difficulty" type="radio" value="Khó" /><div class="rounded-lg bg-white p-2 text-center text-[10px] font-bold transition-all peer-checked:bg-primary peer-checked:text-white">Khó</div></label>
+                </div>
+              </fieldset>
+            </div>
+
+            <label class="flex flex-col gap-2">
+              <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Mô tả chính</span>
+              <textarea id="tour_description" class="resize-none rounded-xl bg-surface-container-lowest p-4 text-sm shadow-sm transition-all focus:ring-2 focus:ring-primary/20" placeholder="Câu chuyện cảm hứng về hành trình..." rows="4"></textarea>
+            </label>
+          </div>
+
+          <div class="space-y-8">
+            <label class="flex flex-col gap-2">
+              <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Hình ảnh chủ đạo</span>
+              <div class="group flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-outline-variant bg-surface-container-low p-8 text-center transition-all hover:border-primary hover:bg-surface-container">
+                <span class="material-symbols-outlined text-4xl text-slate-300 transition-colors group-hover:text-primary">cloud_upload</span>
+                <span class="text-sm font-bold text-slate-400">Kéo hình ảnh trekking độ phân giải cao vào đây</span>
+                <div class="w-full space-y-3">
+                  <div class="file-upload-inline flex gap-3">
+                    <input id="tour_images_names" readonly placeholder="Chưa chọn ảnh" class="w-full rounded-xl bg-white px-4 py-3 text-sm text-slate-900 shadow-sm" type="text" />
+                    <button id="tour_images_upload_btn" class="rounded-full bg-primary px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] text-white" type="button">Upload</button>
+                  </div>
+                  <small class="block text-left text-xs text-slate-500">Có thể chọn nhiều ảnh cùng lúc. Ảnh đầu tiên sẽ dùng làm ảnh đại diện ngoài danh sách tour.</small>
+                </div>
+              </div>
+              <!-- Image preview grid -->
+              <div id="tour_images_preview" class="hidden grid grid-cols-4 gap-3"></div>
+              <input id="tour_images" accept="image/*" multiple hidden type="file" />
+            </label>
+
+            <div class="grid grid-cols-2 gap-4">
+              <label class="flex flex-col gap-2">
+                <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Giá (VNĐ)</span>
+                <input id="tour_price" class="rounded-xl bg-surface-container-lowest p-4 text-sm shadow-sm transition-all focus:ring-2 focus:ring-primary/20" placeholder="20.000.000" type="text" />
+              </label>
+              <label class="flex flex-col gap-2">
+                <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Số khách cố định</span>
+                <input id="tour_fixed_guest_count" class="rounded-xl bg-surface-container-lowest p-4 text-sm shadow-sm transition-all focus:ring-2 focus:ring-primary/20" max="200" min="1" step="1" type="number" value="12" />
+              </label>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <label class="flex flex-col gap-2">
+                <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Mùa đẹp nhất</span>
+                <input id="tour_best_time" class="rounded-xl bg-surface-container-lowest p-4 text-sm shadow-sm transition-all focus:ring-2 focus:ring-primary/20" placeholder="Th4 - Th10" type="text" />
+              </label>
+              <label class="flex flex-col gap-2">
+                <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Độ cao tối đa</span>
+                <input id="tour_max_altitude" class="rounded-xl bg-surface-container-lowest p-4 text-sm shadow-sm transition-all focus:ring-2 focus:ring-primary/20" placeholder="5,200m" type="text" />
+              </label>
+            </div>
+
+          </div>
+
+          <label class="flex flex-col gap-2 md:col-span-2">
+            <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Tổng quan hành trình</span>
+            <textarea id="tour_trip_details" class="resize-none rounded-xl bg-surface-container-lowest p-4 text-sm shadow-sm transition-all focus:ring-2 focus:ring-primary/20" placeholder="Mô tả tổng quan cung đường, điểm nhấn và lưu ý chính..." rows="6"></textarea>
+          </label>
+
+          <div class="mt-8 space-y-12 md:col-span-2">
+            <div class="flex flex-col gap-6">
+              <div class="flex items-center justify-between gap-4">
+                <h5 class="flex items-center gap-3 text-xl font-bold text-primary">
+                  Lịch trình từng bước
+                </h5>
+                <div class="flex flex-wrap justify-end gap-2.5">
+                  <button id="add-itinerary-day-btn" class="rounded-full bg-primary px-4 py-2 text-lg font-bold leading-none text-white" type="button" aria-label="Thêm lịch trình" title="Thêm lịch trình">+</button>
+                  <button id="remove-itinerary-day-btn" class="rounded-full bg-[#ffdad6] px-4 py-2 text-lg font-bold leading-none text-[#93000a]" type="button" aria-label="Xóa lịch trình" title="Xóa lịch trình">-</button>
+                </div>
+              </div>
+
+              <label class="flex flex-col gap-2 text-sm font-semibold text-slate-700">
+                <span class="text-xs font-bold uppercase tracking-widest text-slate-400">NGÀY 01</span>
+                <textarea id="tour_itinerary_day1_title" class="resize-none rounded-xl bg-surface-container-lowest px-4 py-2.5 text-sm uppercase leading-5 shadow-sm transition-all focus:ring-2 focus:ring-primary/20" rows="1" placeholder="VÍ DỤ: ĐẾN NƠI &amp; TRẠM DỪNG CHÂN"></textarea>
+                <textarea id="tour_itinerary_day1" class="resize-none rounded-xl bg-surface-container-lowest p-4 text-sm shadow-sm transition-all focus:ring-2 focus:ring-primary/20" rows="3" placeholder="Ví dụ: 05:30 ăn sáng, 08:00 xuất phát..."></textarea>
+              </label>
+              <div id="tour_itinerary_extra_container" class="space-y-4"></div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-12 md:grid-cols-2">
+              <label class="flex flex-col gap-4">
+                <span class="flex items-center gap-3 text-lg font-bold text-primary"><span class="material-symbols-outlined text-emerald-600">check_circle</span>Bao gồm</span>
+                <textarea id="tour_includes_text" class="rounded-xl bg-white p-4 text-sm shadow-sm focus:ring-2 focus:ring-emerald-500/20" placeholder="Hướng dẫn viên chuyên nghiệp, trang thiết bị, bữa ăn..." rows="4"></textarea>
+              </label>
+              <label class="flex flex-col gap-4">
+                <span class="flex items-center gap-3 text-lg font-bold text-primary"><span class="material-symbols-outlined text-error">cancel</span>Không bao gồm</span>
+                <textarea id="tour_excludes_text" class="rounded-xl bg-white p-4 text-sm shadow-sm focus:ring-2 focus:ring-error/20" placeholder="Vé máy bay, bảo hiểm du lịch..." rows="4"></textarea>
+              </label>
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-4 border-t border-slate-200/50 pt-12 md:col-span-2">
+            <button id="tour-dialog-cancel" class="px-8 py-3 font-bold text-slate-400 transition-colors hover:text-primary" type="button">Hủy bản nháp</button>
+            <button class="rounded-xl bg-primary px-10 py-4 font-bold text-on-primary shadow-2xl shadow-primary/30 transition-all hover:scale-105 active:scale-95" type="submit">Xuất bản hành trình</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="/admin-shared-layout.js"></script>
+  <script src="/admin-tours.js?v=20260509-2"></script>
+</body>
+</html>
