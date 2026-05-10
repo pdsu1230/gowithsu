@@ -4,6 +4,10 @@ const tourAdminList = document.querySelector('#tour-admin-list');
 const tourCreateButton = document.querySelector('#tour-create-btn');
 const tourEditDialog = document.querySelector('#tour-edit-dialog');
 const tourDialogClose = document.querySelector('#tour-dialog-close');
+const tourDeleteConfirmDialog = document.querySelector('#tour-delete-confirm-dialog');
+const tourDeleteConfirmMessage = document.querySelector('#tour-delete-confirm-message');
+const tourDeleteCancelButton = document.querySelector('#tour-delete-cancel-btn');
+const tourDeleteConfirmButton = document.querySelector('#tour-delete-confirm-btn');
 const adminLogoutButton = document.querySelector('#admin-logout-btn');
 const tourImagesInput = document.querySelector('#tour_images');
 const tourImagesNameInput = document.querySelector('#tour_images_names');
@@ -25,6 +29,9 @@ let uploadedImageUrls = [];
 let pendingImageFiles = [];
 let visibleItineraryDays = 1;
 const MAX_VISIBLE_ITINERARY_DAYS = 10;
+const MAX_UPLOAD_IMAGE_SIZE_MB = 8;
+
+let deleteDialogResolver = null;
 
 function showToast(message) {
   const existing = document.querySelector('#admin-toast');
@@ -54,6 +61,63 @@ function showToast(message) {
     toast.style.transform = 'translateX(-50%) translateY(0)';
     setTimeout(() => toast.remove(), 220);
   }, 2500);
+}
+
+function confirmTourDelete(tourTitle = '') {
+  if (!tourDeleteConfirmDialog || typeof tourDeleteConfirmDialog.showModal !== 'function') {
+    return Promise.resolve(window.confirm('Xóa tour này và toàn bộ booking liên quan?'));
+  }
+
+  if (tourDeleteConfirmMessage) {
+    const title = String(tourTitle || '').trim();
+    tourDeleteConfirmMessage.textContent = title
+      ? `Bạn chắc chắn muốn xóa tour "${title}" và toàn bộ booking liên quan?`
+      : 'Bạn chắc chắn muốn xóa tour này và toàn bộ booking liên quan?';
+  }
+
+  return new Promise((resolve) => {
+    deleteDialogResolver = resolve;
+    tourDeleteConfirmDialog.showModal();
+  });
+}
+
+function resolveDeleteDialog(confirmed) {
+  if (deleteDialogResolver) {
+    deleteDialogResolver(Boolean(confirmed));
+    deleteDialogResolver = null;
+  }
+
+  if (tourDeleteConfirmDialog?.open) {
+    tourDeleteConfirmDialog.close();
+  }
+}
+
+if (tourDeleteCancelButton) {
+  tourDeleteCancelButton.addEventListener('click', () => resolveDeleteDialog(false));
+}
+
+if (tourDeleteConfirmButton) {
+  tourDeleteConfirmButton.addEventListener('click', () => resolveDeleteDialog(true));
+}
+
+if (tourDeleteConfirmDialog) {
+  tourDeleteConfirmDialog.addEventListener('cancel', (event) => {
+    event.preventDefault();
+    resolveDeleteDialog(false);
+  });
+
+  tourDeleteConfirmDialog.addEventListener('click', (event) => {
+    const bounds = tourDeleteConfirmDialog.getBoundingClientRect();
+    const clickedInside =
+      event.clientX >= bounds.left &&
+      event.clientX <= bounds.right &&
+      event.clientY >= bounds.top &&
+      event.clientY <= bounds.bottom;
+
+    if (!clickedInside) {
+      resolveDeleteDialog(false);
+    }
+  });
 }
 
 function defaultItineraryTitle(dayNumber) {
@@ -366,9 +430,17 @@ async function uploadPendingImages() {
     body: formData
   });
 
-  const result = await response.json();
+  let result;
+  try {
+    result = await response.json();
+  } catch (_error) {
+    result = { message: 'Máy chủ upload trả về dữ liệu không hợp lệ.' };
+  }
 
   if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error('Phiên đăng nhập admin đã hết hạn. Vui lòng đăng nhập lại.');
+    }
     throw new Error(result.message || 'Upload ảnh thất bại.');
   }
 
@@ -498,6 +570,22 @@ tourImagesInput.addEventListener('change', async () => {
   if (!files.length) {
     return;
   }
+
+  const hasInvalidType = files.some((file) => !String(file.type || '').startsWith('image/'));
+  if (hasInvalidType) {
+    tourStatus.textContent = 'Chỉ hỗ trợ file ảnh (jpg, png, webp...).';
+    tourImagesInput.value = '';
+    return;
+  }
+
+  const oversizeFile = files.find((file) => file.size > MAX_UPLOAD_IMAGE_SIZE_MB * 1024 * 1024);
+  if (oversizeFile) {
+    tourStatus.textContent = `Ảnh "${oversizeFile.name}" vượt quá ${MAX_UPLOAD_IMAGE_SIZE_MB}MB.`;
+    tourImagesInput.value = '';
+    return;
+  }
+
+  tourStatus.textContent = '';
 
   pendingImageFiles = files;
   updateImageNameInput();
@@ -697,7 +785,8 @@ function wireTourListActions(tours) {
 
   tourAdminList.querySelectorAll('.tour-delete-btn').forEach((button) => {
     button.addEventListener('click', async () => {
-      const confirmed = window.confirm('Xóa tour này và toàn bộ booking liên quan?');
+      const tour = tours.find((item) => item.id === Number(button.dataset.tourId));
+      const confirmed = await confirmTourDelete(tour?.title || '');
       if (!confirmed) {
         return;
       }
@@ -712,6 +801,7 @@ function wireTourListActions(tours) {
 
 tourForm.addEventListener('submit', async (event) => {
   event.preventDefault();
+  tourStatus.textContent = '';
 
   const submitButton = tourForm.querySelector('button[type="submit"]');
   const originalSubmitLabel = submitButton ? submitButton.textContent : '';
@@ -753,6 +843,14 @@ tourForm.addEventListener('submit', async (event) => {
       await loadTours();
       showToast(tourId ? 'Cập nhật thành công' : 'Thêm mới thành công');
     } else {
+      if (response.status === 401) {
+        tourStatus.textContent = 'Phiên đăng nhập admin đã hết hạn. Vui lòng đăng nhập lại.';
+        setTimeout(() => {
+          window.location.href = '/?adminLogin=1';
+        }, 800);
+        return;
+      }
+
       tourStatus.textContent = result.message || 'Không thể lưu tour.';
     }
   } catch (_error) {

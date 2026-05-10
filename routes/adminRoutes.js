@@ -1,13 +1,12 @@
 const express = require('express');
-const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 const AdminController = require('../controllers/adminController');
+const { ensureUploadDirectory } = require('../services/uploadPath.service');
 
 const router = express.Router();
 
-const imagesDir = path.join(__dirname, '..', 'Images');
-fs.mkdirSync(imagesDir, { recursive: true });
+const imagesDir = ensureUploadDirectory();
 
 const storage = multer.diskStorage({
 	destination: (_req, _file, cb) => {
@@ -35,7 +34,19 @@ router.get('/tours', AdminController.getTours);
 router.post('/tours', AdminController.createTour);
 router.put('/tours/:id', AdminController.updateTour);
 router.delete('/tours/:id', AdminController.deleteTour);
-router.post('/upload-images', upload.array('images', 20), AdminController.uploadImages);
+router.post('/upload-images', (req, res, next) => {
+	upload.array('images', 20)(req, res, (error) => {
+		if (error) {
+			if (error.code === 'LIMIT_FILE_SIZE') {
+				return res.status(400).json({ message: 'Mỗi ảnh tối đa 8MB.' });
+			}
+
+			return res.status(400).json({ message: error.message || 'Upload ảnh thất bại.' });
+		}
+
+		return AdminController.uploadImages(req, res, next);
+	});
+});
 
 router.get('/bookings', AdminController.getBookings);
 router.get('/bookings/history', AdminController.getHistoryBookings);

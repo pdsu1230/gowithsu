@@ -365,7 +365,25 @@
     </div>
   </dialog>
 
+  <dialog id="tour-delete-confirm-dialog" class="w-full max-w-md rounded-2xl border-none p-0 shadow-2xl backdrop:bg-slate-900/45 backdrop:backdrop-blur-sm">
+    <div class="rounded-2xl bg-white p-6 md:p-7">
+      <div class="flex items-start gap-3">
+        <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-rose-100 text-rose-700">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">warning</span>
+        </span>
+        <div>
+          <h4 class="text-lg font-extrabold text-slate-900">Xác nhận xóa tour</h4>
+          <p id="tour-delete-confirm-message" class="mt-1 text-sm leading-relaxed text-slate-600">Bạn chắc chắn muốn xóa tour này?</p>
+        </div>
+      </div>
+      <div class="mt-6 flex justify-end gap-3">
+        <button id="tour-delete-cancel-btn" class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50" type="button">Hủy</button>
+        <button id="tour-delete-confirm-btn" class="rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-rose-600/20 transition-transform active:scale-95" type="button">Xóa tour</button>
+      </div>
+    </div>
+  </dialog>
+
   <script src="/admin-shared-layout.js"></script>
-  <script src="/admin-tours.js?v=20260509-3"></script>
+  <script src="/admin-tours.js?v=20260510-2"></script>
 </body>
 </html>

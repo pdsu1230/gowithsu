@@ -4,14 +4,16 @@ const publicRoutes = require('./routes/publicRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const { requireAdminPage, requireAdminApi } = require('./middleware/adminAuth');
 const { initDatabase } = require('./database/db');
+const { resolveUploadDirectory, ensureUploadDirectory } = require('./services/uploadPath.service');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const uploadDir = resolveUploadDirectory();
 
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/Images', express.static(path.join(__dirname, 'Images')));
+app.use('/Images', express.static(uploadDir));
 
 app.use('/api', publicRoutes);
 app.use('/api/admin', requireAdminApi, adminRoutes);
@@ -65,6 +67,7 @@ app.use((err, req, res, next) => {
 
 async function startServer() {
   await initDatabase();
+  ensureUploadDirectory();
 
   app.listen(PORT, () => {
     console.log(`Tour booking app listening on http://localhost:${PORT}`);
