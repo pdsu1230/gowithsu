@@ -1,5 +1,5 @@
 (function () {
-  const LOGO_PATH = '/Images/gowithsulogo.svg';
+  const LOGO_PATH = '/images/gowithsulogo.svg';
 
   function getPageKey() {
     const path = window.location.pathname;

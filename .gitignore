@@ -1,0 +1,5 @@
+database.sqlite
+cookie.txt
+/Images/
+node_modules/
+.env
