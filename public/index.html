@@ -106,9 +106,18 @@
   <!-- Hero Section -->
   <section class="relative min-h-[78vh] md:min-h-screen flex items-center pt-16 md:pt-20 overflow-hidden">
     <div class="absolute inset-0 z-0">
-      <img class="w-full h-full object-cover"
-        data-alt="Majestic high mountain range with snow-capped peaks against a clear blue sky, sharp lighting reflecting off the glaciers"
-        src="/images/IMG_0226.png" />
+      <div id="hero-slider" class="relative h-full w-full overflow-hidden">
+        <img
+          class="hero-slide absolute inset-0 h-full w-full object-cover opacity-100 transition-opacity duration-[1400ms] ease-out"
+          data-alt="Majestic high mountain range with snow-capped peaks against a clear blue sky, sharp lighting reflecting off the glaciers"
+          src="/images/hero/IMG_0226.png"
+          alt="Khung cảnh núi cao hùng vĩ" />
+        <img
+          class="hero-slide absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-[1400ms] ease-out"
+          data-alt="Portrait of mountain guide Dang Su standing confidently in the highlands"
+          src="/images/hero/IMG_0041.jpg"
+          alt="Đặng Sự giữa hành trình miền núi" />
+      </div>
       <div class="absolute inset-0 bg-gradient-to-r from-primary/40 to-transparent"></div>
     </div>
     <div class="relative z-10 max-w-7xl mx-auto px-4 md:px-8 w-full">
@@ -140,6 +149,7 @@
             <span class="text-sm font-medium">Đã chinh phục cùng mình</span>
           </div>
         </div>
+        <div id="hero-slider-dots" class="mt-6 flex items-center gap-2 sm:mt-8" aria-label="Chọn ảnh hero"></div>
       </div>
     </div>
   </section>

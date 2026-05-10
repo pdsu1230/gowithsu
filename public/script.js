@@ -5,6 +5,16 @@ const adminLoginStatus = document.querySelector('#admin-login-status');
 const adminLoginOpenButton = document.querySelector('#admin-login-open-btn');
 const adminLoginCloseButton = document.querySelector('#admin-login-close-btn');
 const discoverTourLinks = document.querySelectorAll('[data-discover-tour-link]');
+const HERO_SLIDES_FALLBACK = [
+  {
+    src: '/images/hero/IMG_0226.png',
+    alt: 'Khung cảnh núi cao hùng vĩ'
+  },
+  {
+    src: '/images/hero/hero1.jpg',
+    alt: 'Khoảnh khắc trekking nổi bật'
+  }
+];
 
 function openAdminLoginDialog() {
   adminLoginStatus.textContent = '';
@@ -125,6 +135,141 @@ function getTourImage(tour) {
   }
 
   return 'https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1200&q=80';
+}
+
+async function loadHeroSlides() {
+  try {
+    const response = await fetch('/api/hero-images');
+    if (!response.ok) {
+      return HERO_SLIDES_FALLBACK;
+    }
+
+    const slides = await response.json();
+    if (!Array.isArray(slides) || !slides.length) {
+      return HERO_SLIDES_FALLBACK;
+    }
+
+    return slides
+      .map((slide) => ({
+        src: String(slide.src || '').trim(),
+        alt: String(slide.alt || 'Hình ảnh nổi bật GoWithSu').trim()
+      }))
+      .filter((slide) => slide.src);
+  } catch (_error) {
+    return HERO_SLIDES_FALLBACK;
+  }
+}
+
+async function initHeroSlider() {
+  const slider = document.querySelector('#hero-slider');
+  if (!slider) {
+    return;
+  }
+
+  const dotContainer = document.querySelector('#hero-slider-dots');
+  const slides = Array.from(slider.querySelectorAll('.hero-slide'));
+
+  if (!slides.length) {
+    return;
+  }
+
+  const uniqueSources = (await loadHeroSlides())
+    .map((slide) => ({
+      src: String(slide.src || '').trim(),
+      alt: String(slide.alt || 'Hình ảnh nổi bật GoWithSu').trim()
+    }))
+    .filter((slide) => slide.src);
+
+  if (!uniqueSources.length) {
+    return;
+  }
+
+  while (slides.length < uniqueSources.length) {
+    const clone = slides[0].cloneNode(true);
+    clone.classList.remove('opacity-100');
+    clone.classList.add('opacity-0');
+    slider.appendChild(clone);
+    slides.push(clone);
+  }
+
+  slides.forEach((slide, index) => {
+    const heroSlide = uniqueSources[index];
+    if (!heroSlide) {
+      slide.remove();
+      return;
+    }
+
+    slide.src = heroSlide.src;
+    slide.alt = heroSlide.alt;
+  });
+
+  const activeSlides = Array.from(slider.querySelectorAll('.hero-slide'));
+  if (dotContainer) {
+    dotContainer.innerHTML = uniqueSources
+      .map((_, index) => `
+        <button
+          type="button"
+          class="hero-slider-dot h-2.5 rounded-full bg-white/45 transition-all duration-300 ${index === 0 ? 'w-8 bg-white' : 'w-2.5'}"
+          aria-label="Chuyển đến ảnh hero ${index + 1}"
+          data-slide-index="${index}"></button>`)
+      .join('');
+  }
+
+  if (uniqueSources.length === 1) {
+    return;
+  }
+
+  let activeIndex = 0;
+  let intervalId = null;
+
+  function renderSlide(nextIndex) {
+    activeIndex = nextIndex;
+    activeSlides.forEach((slide, index) => {
+      slide.classList.toggle('opacity-100', index === nextIndex);
+      slide.classList.toggle('opacity-0', index !== nextIndex);
+    });
+
+    if (!dotContainer) {
+      return;
+    }
+
+    dotContainer.querySelectorAll('.hero-slider-dot').forEach((dot, index) => {
+      dot.classList.toggle('w-8', index === nextIndex);
+      dot.classList.toggle('w-2.5', index !== nextIndex);
+      dot.classList.toggle('bg-white', index === nextIndex);
+      dot.classList.toggle('bg-white/45', index !== nextIndex);
+    });
+  }
+
+  function restartInterval() {
+    if (intervalId) {
+      window.clearInterval(intervalId);
+    }
+
+    intervalId = window.setInterval(() => {
+      renderSlide((activeIndex + 1) % uniqueSources.length);
+    }, 4500);
+  }
+
+  dotContainer?.querySelectorAll('.hero-slider-dot').forEach((dot) => {
+    dot.addEventListener('click', () => {
+      const nextIndex = Number(dot.dataset.slideIndex || 0);
+      renderSlide(nextIndex);
+      restartInterval();
+    });
+  });
+
+  slider.addEventListener('mouseenter', () => {
+    if (intervalId) {
+      window.clearInterval(intervalId);
+      intervalId = null;
+    }
+  });
+
+  slider.addEventListener('mouseleave', restartInterval);
+
+  renderSlide(0);
+  restartInterval();
 }
 
 function renderTours(tours) {
@@ -296,6 +441,7 @@ async function loadTours() {
   }
 
   renderTours(tours);
+  initHeroSlider().catch(() => {});
 }
 
 async function loadDiscoverTour() {
@@ -412,6 +558,7 @@ if (pageUrl.searchParams.get('adminLogin') === '1') {
 
 loadTours().catch(() => {
   tourList.innerHTML = '<p class="empty-state">Không tải được danh sách tour.</p>';
+  initHeroSlider().catch(() => {});
 });
 
 loadDiscoverTour().catch(() => {});

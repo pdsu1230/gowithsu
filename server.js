@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const publicRoutes = require('./routes/publicRoutes');
@@ -9,6 +10,24 @@ const { resolveUploadDirectory, ensureUploadDirectory } = require('./services/up
 const app = express();
 const PORT = process.env.PORT || 3000;
 const uploadDir = resolveUploadDirectory();
+const heroImagesDir = path.join(__dirname, 'public', 'images', 'hero');
+
+function getHeroImageList() {
+  try {
+    const entries = fs.readdirSync(heroImagesDir, { withFileTypes: true });
+    return entries
+      .filter((entry) => entry.isFile())
+      .map((entry) => entry.name)
+      .filter((fileName) => /\.(avif|gif|jpe?g|png|webp)$/i.test(fileName))
+      .sort((left, right) => left.localeCompare(right, undefined, { numeric: true, sensitivity: 'base' }))
+      .map((fileName) => ({
+        src: `/images/hero/${encodeURIComponent(fileName)}`,
+        alt: `Ảnh hero ${fileName.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ')}`
+      }));
+  } catch (_error) {
+    return [];
+  }
+}
 
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
@@ -17,6 +36,10 @@ app.use('/Images', express.static(uploadDir));
 
 app.use('/api', publicRoutes);
 app.use('/api/admin', requireAdminApi, adminRoutes);
+
+app.get('/api/hero-images', (req, res) => {
+  res.json(getHeroImageList());
+});
 
 app.get('/booking', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'booking.html'));
