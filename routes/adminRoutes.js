@@ -1,26 +1,14 @@
 const express = require('express');
-const path = require('path');
 const multer = require('multer');
 const AdminController = require('../controllers/adminController');
 const { ensureUploadDirectory } = require('../services/uploadPath.service');
 
 const router = express.Router();
 
-const imagesDir = ensureUploadDirectory();
-
-const storage = multer.diskStorage({
-	destination: (_req, _file, cb) => {
-		cb(null, imagesDir);
-	},
-	filename: (_req, file, cb) => {
-		const ext = path.extname(file.originalname || '').toLowerCase();
-		const safeName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
-		cb(null, safeName);
-	}
-});
+ensureUploadDirectory();
 
 const upload = multer({
-	storage,
+	storage: multer.memoryStorage(),
 	limits: {
 		fileSize: 8 * 1024 * 1024
 	},
@@ -44,7 +32,7 @@ router.post('/upload-images', (req, res, next) => {
 			return res.status(400).json({ message: error.message || 'Upload ảnh thất bại.' });
 		}
 
-		return AdminController.uploadImages(req, res, next);
+		return Promise.resolve(AdminController.uploadImages(req, res, next)).catch(next);
 	});
 });
 

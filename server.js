@@ -4,7 +4,7 @@ const express = require('express');
 const publicRoutes = require('./routes/publicRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const { requireAdminPage, requireAdminApi } = require('./middleware/adminAuth');
-const { initDatabase } = require('./database/db');
+const { initDatabase } = require('./database/client');
 const { resolveUploadDirectory, ensureUploadDirectory } = require('./services/uploadPath.service');
 
 const app = express();

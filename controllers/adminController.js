@@ -7,6 +7,7 @@ const {
   buildWeeklyWorkbook,
   workbookToBuffer
 } = require('../services/excel.service');
+const { uploadImages: uploadImagesToStorage } = require('../services/imageStorage.service');
 
 function normalizeImageUrlList(rawValue) {
   const raw = String(rawValue || '').trim();
@@ -238,14 +239,15 @@ function toAsciiFileName(value, fallback = 'tour-export') {
 }
 
 const AdminController = {
-  uploadImages(req, res) {
+  async uploadImages(req, res) {
     const files = Array.isArray(req.files) ? req.files : [];
 
     if (files.length === 0) {
       return res.status(400).json({ message: 'Không có file ảnh nào được upload.' });
     }
 
-    const urls = files.map((file) => `/Images/${file.filename}`);
+    const uploaded = await uploadImagesToStorage(files);
+    const urls = uploaded.map((item) => item.url);
     return res.json({
       message: 'Upload ảnh thành công.',
       urls,
@@ -253,24 +255,24 @@ const AdminController = {
     });
   },
 
-  getTours(req, res) {
-    res.json(TourModel.getAllWithGuestStats());
+  async getTours(req, res) {
+    res.json(await TourModel.getAllWithGuestStats());
   },
 
-  createTour(req, res) {
+  async createTour(req, res) {
     const payload = sanitizeTourPayload(req.body);
 
     if (!payload.title) {
       return res.status(400).json({ message: 'Tên tour là bắt buộc.' });
     }
 
-    const result = TourModel.create(payload);
+    const result = await TourModel.create(payload);
     res.status(201).json({ id: result.lastInsertRowid, message: 'Đã tạo tour mới.' });
   },
 
-  updateTour(req, res) {
+  async updateTour(req, res) {
     const payload = sanitizeTourPayload(req.body);
-    const result = TourModel.update(Number(req.params.id), payload);
+    const result = await TourModel.update(Number(req.params.id), payload);
 
     if (result.changes === 0) {
       return res.status(404).json({ message: 'Không tìm thấy tour.' });
@@ -279,8 +281,8 @@ const AdminController = {
     res.json({ message: 'Đã cập nhật tour.' });
   },
 
-  deleteTour(req, res) {
-    const result = TourModel.remove(Number(req.params.id));
+  async deleteTour(req, res) {
+    const result = await TourModel.remove(Number(req.params.id));
 
     if (result.changes === 0) {
       return res.status(404).json({ message: 'Không tìm thấy tour.' });
@@ -289,18 +291,18 @@ const AdminController = {
     res.json({ message: 'Đã xóa tour.' });
   },
 
-  getBookings(req, res) {
-    const bookings = BookingModel.getAllWithSummary();
+  async getBookings(req, res) {
+    const bookings = await BookingModel.getAllWithSummary();
     res.json({
       grouped: groupBookings(bookings),
       list: bookings
     });
   },
 
-  getHistoryBookings(req, res) {
+  async getHistoryBookings(req, res) {
     const today = new Date();
     const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-    const bookings = BookingModel.getAllWithSummary().filter((b) => b.start_date < todayStr);
+    const bookings = (await BookingModel.getAllWithSummary()).filter((b) => b.start_date < todayStr);
     // Group by tour + date descending
     const grouped = {};
     bookings.forEach((b) => {
@@ -322,37 +324,37 @@ const AdminController = {
     res.json(result);
   },
 
-  getBookingMembers(req, res) {
+  async getBookingMembers(req, res) {
     const bookingId = Number(req.params.bookingId);
-    const members = BookingMemberModel.getByBookingId(bookingId);
-    const booking = BookingModel.getById(bookingId);
+    const members = await BookingMemberModel.getByBookingId(bookingId);
+    const booking = await BookingModel.getById(bookingId);
     const startDate = booking ? booking.start_date : null;
     res.json(members.map((m) => ({ ...m, start_date: startDate, booking_id: bookingId })));
   },
 
-  deleteMember(req, res) {
+  async deleteMember(req, res) {
     const memberId = Number(req.params.memberId);
     if (!memberId) {
       return res.status(400).json({ message: 'ID thành viên không hợp lệ.' });
     }
-    BookingMemberModel.deleteById(memberId);
+    await BookingMemberModel.deleteById(memberId);
     return res.json({ message: 'Đã xóa thành viên.' });
   },
 
-  updateBookingDate(req, res) {
+  async updateBookingDate(req, res) {
     const bookingId = Number(req.params.bookingId);
     const { start_date } = req.body;
     if (!start_date || !/^\d{4}-\d{2}-\d{2}$/.test(start_date)) {
       return res.status(400).json({ message: 'Ngày khởi hành không hợp lệ.' });
     }
-    BookingModel.updateStartDate(bookingId, start_date);
+    await BookingModel.updateStartDate(bookingId, start_date);
     res.json({ message: 'Đã cập nhật ngày khởi hành.' });
   },
 
-  exportTour(req, res) {
+  async exportTour(req, res) {
     const tourId = Number(req.params.tourId);
     const startDate = req.params.date;
-    const rows = BookingModel.getBookingsForTourDate(tourId, startDate);
+    const rows = await BookingModel.getBookingsForTourDate(tourId, startDate);
 
     if (rows.length === 0) {
       return res.status(404).json({ message: 'Không có dữ liệu để xuất.' });
@@ -367,20 +369,20 @@ const AdminController = {
     res.send(workbookToBuffer(workbook));
   },
 
-  exportWeek(req, res) {
+  async exportWeek(req, res) {
     const { startDate, endDate } = getWeekRange();
-    const overviewRows = BookingModel.getWeeklyOverview(startDate, endDate);
+    const overviewRows = await BookingModel.getWeeklyOverview(startDate, endDate);
 
     if (overviewRows.length === 0) {
       return res.status(404).json({ message: 'Không có dữ liệu booking trong tuần này.' });
     }
 
     const groupedRows = {};
-    overviewRows.forEach((row) => {
-      const detailRows = BookingModel.getBookingsForTourDate(row.tour_id || 0, row.start_date);
+    for (const row of overviewRows) {
+      const detailRows = await BookingModel.getBookingsForTourDate(row.tour_id || 0, row.start_date);
       const sheetName = `${row.tour_title} - ${formatDateDisplay(row.start_date).slice(0, 5)}`;
       groupedRows[sheetName] = detailRows;
-    });
+    }
 
     const workbook = buildWeeklyWorkbook(overviewRows, groupedRows);
     res.setHeader('Content-Disposition', 'attachment; filename="Tour-tuan.xlsx"');
@@ -388,13 +390,13 @@ const AdminController = {
     res.send(workbookToBuffer(workbook));
   },
 
-  getOverviewStats(req, res) {
-    const db = require('../database/db');
+  async getOverviewStats(req, res) {
+    const db = require('../database/client');
     const today = new Date();
     const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
     // Tours that have at least one completed trip (start_date < today)
-    const completedToursRow = db.get(`
+    const completedToursRow = await db.get(`
       SELECT COUNT(DISTINCT tour_id) AS cnt
       FROM bookings
       WHERE start_date < ?
@@ -402,7 +404,7 @@ const AdminController = {
     const totalCompletedTours = completedToursRow ? completedToursRow.cnt : 0;
 
     // Total guests from past bookings
-    const guestTotalRow = db.get(`
+    const guestTotalRow = await db.get(`
       SELECT COUNT(bm.id) AS cnt
       FROM booking_members bm
       JOIN bookings b ON b.id = bm.booking_id
@@ -411,7 +413,7 @@ const AdminController = {
     const totalGuests = guestTotalRow ? guestTotalRow.cnt : 0;
 
     // Monthly past guests
-    const pastRows = db.all(`
+    const pastRows = await db.all(`
       SELECT
         strftime('%Y-%m', b.start_date) AS month,
         COUNT(bm.id) AS guests
@@ -423,7 +425,7 @@ const AdminController = {
     `, [todayStr]);
 
     // Monthly upcoming/current guests
-    const upcomingRows = db.all(`
+    const upcomingRows = await db.all(`
       SELECT
         strftime('%Y-%m', b.start_date) AS month,
         COUNT(bm.id) AS guests

@@ -1,9 +1,9 @@
-const db = require('../database/db');
+const db = require('../database/client');
 
 const BookingMemberModel = {
-  createMany(bookingId, members) {
-    members.forEach((member) => {
-      db.run(
+  async createMany(bookingId, members) {
+    for (const member of members) {
+      await db.run(
         `
           INSERT INTO booking_members (
             booking_id,
@@ -38,10 +38,10 @@ const BookingMemberModel = {
           member.borrow_trekking_pole
         ]
       );
-    });
+    }
   },
 
-  getByBookingId(bookingId) {
+  async getByBookingId(bookingId) {
     return db.all(`
       SELECT *
       FROM booking_members
@@ -50,8 +50,8 @@ const BookingMemberModel = {
     `, [bookingId]);
   },
 
-  deleteById(memberId) {
-    db.run('DELETE FROM booking_members WHERE id = ?', [memberId]);
+  async deleteById(memberId) {
+    return db.run('DELETE FROM booking_members WHERE id = ?', [memberId]);
   }
 };
 

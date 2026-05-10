@@ -1,12 +1,13 @@
-const db = require('../database/db');
+const db = require('../database/client');
 
 const TourModel = {
-  getAll() {
-    return db.all('SELECT * FROM tours ORDER BY created_at DESC, id DESC');
+  async getAll() {
+    const rows = await db.all('SELECT * FROM tours ORDER BY created_at DESC, id DESC');
+    return rows;
   },
 
-  getAllWithGuestStats() {
-    return db.all(`
+  async getAllWithGuestStats() {
+    const rows = await db.all(`
       SELECT
         tours.*,
         COUNT(booking_members.id) AS booked_guest_count
@@ -16,14 +17,16 @@ const TourModel = {
       GROUP BY tours.id
       ORDER BY tours.created_at DESC, tours.id DESC
     `);
+    return rows;
   },
 
-  getById(id) {
-    return db.get('SELECT * FROM tours WHERE id = ?', [id]);
+  async getById(id) {
+    const row = await db.get('SELECT * FROM tours WHERE id = ?', [id]);
+    return row;
   },
 
-  create(data) {
-    return db.run(`
+  async create(data) {
+    const result = await db.run(`
       INSERT INTO tours (
         title,
         category,
@@ -71,10 +74,11 @@ const TourModel = {
       data.includes_text,
       data.excludes_text
     ]);
+    return result;
   },
 
-  update(id, data) {
-    return db.run(`
+  async update(id, data) {
+    const result = await db.run(`
       UPDATE tours
       SET
         title = ?,
@@ -123,10 +127,12 @@ const TourModel = {
       data.excludes_text,
       id
     ]);
+    return result;
   },
 
-  remove(id) {
-    return db.run('DELETE FROM tours WHERE id = ?', [id]);
+  async remove(id) {
+    const result = await db.run('DELETE FROM tours WHERE id = ?', [id]);
+    return result;
   }
 };
 

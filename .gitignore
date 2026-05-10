@@ -3,3 +3,4 @@ cookie.txt
 /Images/
 node_modules/
 .env
+.env.example

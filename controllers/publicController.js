@@ -1,7 +1,7 @@
 const TourModel = require('../models/tour.model');
 const BookingModel = require('../models/booking.model');
 const BookingMemberModel = require('../models/bookingMember.model');
-const db = require('../database/db');
+const db = require('../database/client');
 
 function normalizeMember(member) {
   return {
@@ -46,9 +46,9 @@ function getWeekendRange(today = new Date()) {
   };
 }
 
-function getFeaturedWeekendTour() {
+async function getFeaturedWeekendTour() {
   const { startDate, endDate } = getWeekendRange();
-  const weekendTours = BookingModel.getWeeklyOverview(startDate, endDate)
+  const weekendTours = (await BookingModel.getWeeklyOverview(startDate, endDate))
     .slice()
     .sort((left, right) => {
       return (
@@ -59,7 +59,7 @@ function getFeaturedWeekendTour() {
     });
 
   if (weekendTours.length > 0) {
-    const featuredTour = TourModel.getById(Number(weekendTours[0].tour_id));
+    const featuredTour = await TourModel.getById(Number(weekendTours[0].tour_id));
     if (featuredTour) {
       return {
         tour: featuredTour,
@@ -69,7 +69,7 @@ function getFeaturedWeekendTour() {
     }
   }
 
-  const fallbackTour = TourModel.getAll()[0] || null;
+  const fallbackTour = (await TourModel.getAll())[0] || null;
   return {
     tour: fallbackTour,
     scheduledDate: null,
@@ -77,9 +77,9 @@ function getFeaturedWeekendTour() {
   };
 }
 
-function getSuggestedUpcomingTour(excludeTourId) {
+async function getSuggestedUpcomingTour(excludeTourId) {
   const today = toLocalIsoDate(new Date());
-  const upcomingTours = BookingModel.getUpcomingOverview(today, excludeTourId)
+  const upcomingTours = (await BookingModel.getUpcomingOverview(today, excludeTourId))
     .slice()
     .sort((left, right) => {
       return (
@@ -90,7 +90,7 @@ function getSuggestedUpcomingTour(excludeTourId) {
     });
 
   if (upcomingTours.length > 0) {
-    const suggestedTour = TourModel.getById(Number(upcomingTours[0].tour_id));
+    const suggestedTour = await TourModel.getById(Number(upcomingTours[0].tour_id));
     if (suggestedTour) {
       return {
         tour: suggestedTour,
@@ -100,7 +100,7 @@ function getSuggestedUpcomingTour(excludeTourId) {
     }
   }
 
-  const fallbackTour = TourModel.getAll().find((tour) => Number(tour.id) !== Number(excludeTourId)) || null;
+  const fallbackTour = (await TourModel.getAll()).find((tour) => Number(tour.id) !== Number(excludeTourId)) || null;
   return {
     tour: fallbackTour,
     scheduledDate: null,
@@ -109,12 +109,12 @@ function getSuggestedUpcomingTour(excludeTourId) {
 }
 
 const PublicController = {
-  getTours(req, res) {
-    res.json(TourModel.getAll());
+  async getTours(req, res) {
+    res.json(await TourModel.getAll());
   },
 
-  getDiscoverTour(req, res) {
-    const featured = getFeaturedWeekendTour();
+  async getDiscoverTour(req, res) {
+    const featured = await getFeaturedWeekendTour();
 
     if (!featured.tour) {
       return res.status(404).json({ message: 'Chưa có tour để khám phá.' });
@@ -129,26 +129,26 @@ const PublicController = {
     });
   },
 
-  getRandomTour(req, res) {
+  async getRandomTour(req, res) {
     const excludeTourId = Number(req.query.excludeTourId || 0);
     const today = toLocalIsoDate(new Date());
 
     // Priority 1: upcoming tours sorted by date
-    const upcomingTours = BookingModel.getUpcomingOverview(today, excludeTourId)
+    const upcomingTours = (await BookingModel.getUpcomingOverview(today, excludeTourId))
       .slice()
       .sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
 
     if (upcomingTours.length > 0) {
       // Pick randomly among the upcoming ones (weighted toward sooner dates)
       const pick = upcomingTours[Math.floor(Math.random() * Math.min(upcomingTours.length, 5))];
-      const tour = TourModel.getById(Number(pick.tour_id));
+      const tour = await TourModel.getById(Number(pick.tour_id));
       if (tour) {
         return res.json({ id: tour.id, title: tour.title, href: `/tour/${tour.id}`, scheduledDate: pick.start_date, source: 'upcoming' });
       }
     }
 
     // Fallback: pick any tour randomly except current
-    const allTours = TourModel.getAll().filter((t) => Number(t.id) !== excludeTourId);
+    const allTours = (await TourModel.getAll()).filter((t) => Number(t.id) !== excludeTourId);
     if (allTours.length === 0) {
       return res.status(404).json({ message: 'Không có tour nào.' });
     }
@@ -156,9 +156,9 @@ const PublicController = {
     return res.json({ id: tour.id, title: tour.title, href: `/tour/${tour.id}`, scheduledDate: null, source: 'random' });
   },
 
-  getSuggestedTour(req, res) {
+  async getSuggestedTour(req, res) {
     const excludeTourId = Number(req.query.excludeTourId || 0);
-    const suggested = getSuggestedUpcomingTour(excludeTourId);
+    const suggested = await getSuggestedUpcomingTour(excludeTourId);
 
     if (!suggested.tour) {
       return res.status(404).json({ message: 'Chưa có tour gợi ý phù hợp.' });
@@ -176,8 +176,8 @@ const PublicController = {
     });
   },
 
-  getTourById(req, res) {
-    const tour = TourModel.getById(Number(req.params.id));
+  async getTourById(req, res) {
+    const tour = await TourModel.getById(Number(req.params.id));
     if (!tour) {
       return res.status(404).json({ message: 'Không tìm thấy tour.' });
     }
@@ -185,12 +185,12 @@ const PublicController = {
     return res.json(tour);
   },
 
-  getUpcomingSchedule(req, res) {
+  async getUpcomingSchedule(req, res) {
     const today = new Date();
     const startDate = toLocalIsoDate(today);
     const endDate = toLocalIsoDate(new Date(today.getFullYear(), today.getMonth() + 2, 0));
 
-    const rows = db.all(`
+    const rows = await db.all(`
       SELECT
         bookings.tour_id,
         tours.title AS tour_title,
@@ -207,11 +207,11 @@ const PublicController = {
     return res.json(rows);
   },
 
-  getFeaturedUpcomingTours(req, res) {
+  async getFeaturedUpcomingTours(req, res) {
     const today = toLocalIsoDate(new Date());
 
     // Get distinct tour_ids with soonest upcoming booking, pick 3 unique tours
-    const upcoming = db.all(`
+    const upcoming = await db.all(`
       SELECT
         bookings.tour_id,
         MIN(bookings.start_date) AS next_date
@@ -223,15 +223,18 @@ const PublicController = {
       LIMIT 3
     `, [today]);
 
-    const tours = upcoming.map((row) => {
-      const tour = TourModel.getById(Number(row.tour_id));
-      return tour ? { ...tour, next_date: row.next_date } : null;
-    }).filter(Boolean);
+    const tours = [];
+    for (const row of upcoming) {
+      const tour = await TourModel.getById(Number(row.tour_id));
+      if (tour) {
+        tours.push({ ...tour, next_date: row.next_date });
+      }
+    }
 
     return res.json(tours);
   },
 
-  createBooking(req, res) {
+  async createBooking(req, res) {
     const {
       tour_id,
       start_date,
@@ -258,23 +261,20 @@ const PublicController = {
     const normalizedContactPhone = firstMember.phone;
     const normalizedContactEmail = '';
 
-    const tour = TourModel.getById(Number(tour_id));
+    const tour = await TourModel.getById(Number(tour_id));
     if (!tour) {
       return res.status(404).json({ message: 'Tour không tồn tại.' });
     }
 
-    const bookingResult = db.transaction(() => {
-      const createdBooking = BookingModel.create({
-        tour_id: Number(tour_id),
-        start_date,
-        contact_name: normalizedContactName,
-        contact_phone: normalizedContactPhone,
-        contact_email: normalizedContactEmail
-      });
-
-      BookingMemberModel.createMany(createdBooking.lastInsertRowid, normalizedMembers);
-      return createdBooking;
+    const bookingResult = await BookingModel.create({
+      tour_id: Number(tour_id),
+      start_date,
+      contact_name: normalizedContactName,
+      contact_phone: normalizedContactPhone,
+      contact_email: normalizedContactEmail
     });
+
+    await BookingMemberModel.createMany(bookingResult.lastInsertRowid, normalizedMembers);
 
     return res.status(201).json({
       message: 'Booking thành công. Chúng tôi sẽ liên hệ với bạn sớm.',

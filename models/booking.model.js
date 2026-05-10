@@ -1,7 +1,7 @@
-const db = require('../database/db');
+const db = require('../database/client');
 
 const BookingModel = {
-  create(data) {
+  async create(data) {
     return db.run(`
       INSERT INTO bookings (
         tour_id,
@@ -14,7 +14,7 @@ const BookingModel = {
     `, [data.tour_id, data.start_date, data.contact_name, data.contact_phone, data.contact_email]);
   },
 
-  getAllWithSummary() {
+  async getAllWithSummary() {
     return db.all(`
       SELECT
         bookings.id,
@@ -36,7 +36,7 @@ const BookingModel = {
     `);
   },
 
-  getWeeklyOverview(startDate, endDate) {
+  async getWeeklyOverview(startDate, endDate) {
     return db.all(`
       SELECT
         bookings.tour_id,
@@ -52,7 +52,7 @@ const BookingModel = {
     `, [startDate, endDate]);
   },
 
-  getUpcomingOverview(startDate, excludeTourId = null) {
+  async getUpcomingOverview(startDate, excludeTourId = null) {
     const params = [startDate];
     let excludeClause = '';
 
@@ -77,7 +77,7 @@ const BookingModel = {
     `, params);
   },
 
-  getBookingsForTourDate(tourId, startDate) {
+  async getBookingsForTourDate(tourId, startDate) {
     return db.all(`
       SELECT
         bookings.id,
@@ -105,14 +105,14 @@ const BookingModel = {
     `, [tourId, startDate]);
   },
 
-  updateStartDate(bookingId, newDate) {
+  async updateStartDate(bookingId, newDate) {
     return db.run(
       `UPDATE bookings SET start_date = ? WHERE id = ?`,
       [newDate, bookingId]
     );
   },
 
-  getById(bookingId) {
+  async getById(bookingId) {
     return db.get(`SELECT * FROM bookings WHERE id = ?`, [bookingId]);
   }
 };
