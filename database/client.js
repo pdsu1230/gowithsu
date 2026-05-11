@@ -24,6 +24,9 @@ async function initDatabase() {
     return;
   }
 
+  console.log('DEBUG: DATABASE_URL =', process.env.DATABASE_URL ? '***set***' : 'NOT SET');
+  console.log('DEBUG: FORCE_SQLITE =', JSON.stringify(process.env.FORCE_SQLITE));
+
   if (shouldUsePostgres()) {
     try {
       await initSchema();
