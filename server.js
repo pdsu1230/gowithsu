@@ -1,5 +1,68 @@
 const fs = require('fs');
 const path = require('path');
+
+function parseEnvFile(content) {
+  const parsed = {};
+
+  content.split(/\r?\n/).forEach((line) => {
+    const trimmed = line.trim();
+
+    if (!trimmed || trimmed.startsWith('#')) {
+      return;
+    }
+
+    const equalsIndex = trimmed.indexOf('=');
+
+    if (equalsIndex === -1) {
+      return;
+    }
+
+    const key = trimmed.slice(0, equalsIndex).trim();
+    let value = trimmed.slice(equalsIndex + 1).trim();
+
+    if (!key) {
+      return;
+    }
+
+    if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+      value = value.slice(1, -1);
+    }
+
+    parsed[key] = value;
+  });
+
+  return parsed;
+}
+
+function loadEnvFile(filePath) {
+  if (!fs.existsSync(filePath)) {
+    return false;
+  }
+
+  const envValues = parseEnvFile(fs.readFileSync(filePath, 'utf8'));
+
+  Object.entries(envValues).forEach(([key, value]) => {
+    if (process.env[key] === undefined) {
+      process.env[key] = value;
+    }
+  });
+
+  console.log(`Loaded environment variables from ${filePath}`);
+  return true;
+}
+
+function loadEnvironmentVariables() {
+  const candidateFiles = [
+    path.join('/etc/secrets', '.env'),
+    path.join('/etc/secrets', 'render.env'),
+    path.join(__dirname, '.env')
+  ];
+
+  candidateFiles.forEach(loadEnvFile);
+}
+
+loadEnvironmentVariables();
+
 const express = require('express');
 const publicRoutes = require('./routes/publicRoutes');
 const adminRoutes = require('./routes/adminRoutes');
