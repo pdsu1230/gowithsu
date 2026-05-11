@@ -395,14 +395,16 @@ async function loadUpcomingSchedule() {
   }
 
   const rows = await res.json();
-  if (!rows.length) {
+  const activeRows = rows.filter((row) => Number(row.total_guests || 0) > 0);
+
+  if (!activeRows.length) {
     container.innerHTML = '<div class="py-10 text-center text-slate-500 text-sm">Chưa có lịch khởi hành nào trong 2 tháng tới.</div>';
     return;
   }
 
   // Group by month
   const byMonth = {};
-  rows.forEach((row) => {
+  activeRows.forEach((row) => {
     const d = parseScheduleDate(row.start_date);
     if (!d) {
       return;
