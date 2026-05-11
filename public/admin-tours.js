@@ -453,7 +453,7 @@ async function uploadPendingImages() {
 function tourFormPayload() {
   const itineraryDays = collectItineraryDaysForPayload();
   const fixedGuestCount = Number.parseInt(document.querySelector('#tour_fixed_guest_count').value, 10);
-
+  console.log('Fixed guest count input value:', document.querySelector('#tour_fixed_guest_count').value, 'Parsed value:', fixedGuestCount);
   return {
     title: document.querySelector('#tour_title').value.trim(),
     location: (document.querySelector('#tour_location')?.value || '').trim(),
@@ -729,11 +729,23 @@ function renderTourList(tours) {
 
   tourAdminList.innerHTML = tours
     .map((tour) => {
-      const fixedGuestCount = Number.parseInt(tour.fixed_guest_count, 10) || 12;
-      const bookedGuestCount = Number.parseInt(tour.booked_guest_count, 10) || 0;
+      let fixedGuestCount = Number.parseInt(tour.fixed_guest_count, 10);
+      let bookedGuestCount = Number.parseInt(tour.booked_guest_count, 10);
+
+      if (Number.isNaN(fixedGuestCount)) {
+        console.warn('fixed_guest_count không hợp lệ:', tour.fixed_guest_count);
+        fixedGuestCount = 12; // Giá trị mặc định
+      }
+
+      if (Number.isNaN(bookedGuestCount)) {
+        console.warn('booked_guest_count không hợp lệ:', tour.booked_guest_count);
+        bookedGuestCount = 0; // Giá trị mặc định
+      }
+
       const primaryImage = getTourImageUrls(tour)[0] || '';
       const priceLabel = formatPriceVnd(tour.price || '') || 'Liên hệ';
       const normalizedDifficulty = normalizeDifficulty(tour.difficulty);
+
       return `
         <article class="list-card rounded-2xl border border-primary/10 bg-white shadow-sm overflow-hidden transition-shadow hover:shadow-md">
           <div class="list-card__image h-52 overflow-hidden bg-surface-container-low flex-shrink-0">
@@ -757,13 +769,9 @@ function renderTourList(tours) {
               </div>
               <div class="flex gap-2">
                 <button class="tour-edit-btn inline-flex items-center gap-1.5 rounded-xl border border-primary/10 bg-primary/5 px-3 py-2 text-xs font-bold text-primary transition-colors hover:bg-primary hover:text-white"
-                  data-tour-id="${tour.id}" type="button" aria-label="Sửa tour">
-                  <span class="material-symbols-outlined" style="font-size:15px">edit</span>Sửa
-                </button>
-                <button class="tour-delete-btn inline-flex items-center gap-1.5 rounded-xl border border-error/10 bg-error/5 px-3 py-2 text-xs font-bold text-error transition-colors hover:bg-error hover:text-white"
-                  data-tour-id="${tour.id}" type="button" aria-label="Xóa tour">
-                  <span class="material-symbols-outlined" style="font-size:15px">delete</span>Xóa
-                </button>
+                  data-tour-id="${tour.id}" type="button" aria-label="Sửa tour">Sửa</button>
+                <button class="tour-delete-btn inline-flex items-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-600 transition-colors hover:bg-red-600 hover:text-white"
+                  data-tour-id="${tour.id}" type="button" aria-label="Xóa tour">Xóa</button>
               </div>
             </div>
           </div>
@@ -771,137 +779,179 @@ function renderTourList(tours) {
       `;
     })
     .join('');
-
-  wireTourListActions(tours);
 }
 
-function wireTourListActions(tours) {
-  tourAdminList.querySelectorAll('.tour-edit-btn').forEach((button) => {
-    button.addEventListener('click', () => {
-      const tour = tours.find((item) => item.id === Number(button.dataset.tourId));
-      fillTourForm(tour);
-    });
-  });
+function renderTourStats(tours) {
+  const statTourCount = document.querySelector('#stat-tour-count');
+  const statTotalCapacity = document.querySelector('#stat-total-capacity');
+  const statTotalBooked = document.querySelector('#stat-total-booked');
 
-  tourAdminList.querySelectorAll('.tour-delete-btn').forEach((button) => {
-    button.addEventListener('click', async () => {
-      const tour = tours.find((item) => item.id === Number(button.dataset.tourId));
-      const confirmed = await confirmTourDelete(tour?.title || '');
-      if (!confirmed) {
-        return;
-      }
-
-      const response = await fetch(`/api/admin/tours/${button.dataset.tourId}`, { method: 'DELETE' });
-      await response.json();
-      await loadTours();
-      if (response.ok) showToast('Xóa thành công');
-    });
-  });
-}
-
-tourForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  tourStatus.textContent = '';
-
-  const submitButton = tourForm.querySelector('button[type="submit"]');
-  const originalSubmitLabel = submitButton ? submitButton.textContent : '';
-  if (submitButton) {
-    submitButton.disabled = true;
-    submitButton.textContent = 'Đang xuất bản...';
+  if (!statTourCount || !statTotalCapacity || !statTotalBooked) {
+    return;
   }
 
-  const tourId = document.querySelector('#tour_form_id').value;
-  const method = tourId ? 'PUT' : 'POST';
-  const url = tourId ? `/api/admin/tours/${tourId}` : '/api/admin/tours';
+  const totalCapacity = tours.reduce((sum, tour) => {
+    const fixedGuestCount = Number.parseInt(tour.fixed_guest_count, 10);
+    return sum + (Number.isNaN(fixedGuestCount) ? 0 : fixedGuestCount);
+  }, 0);
+
+  const totalBooked = tours.reduce((sum, tour) => {
+    const bookedGuestCount = Number.parseInt(tour.booked_guest_count, 10);
+    return sum + (Number.isNaN(bookedGuestCount) ? 0 : bookedGuestCount);
+  }, 0);
+
+  statTourCount.textContent = String(tours.length);
+  statTotalCapacity.textContent = String(totalCapacity);
+  statTotalBooked.textContent = String(totalBooked);
+}
+
+async function loadTours() {
+  const response = await fetch('/api/admin/tours');
+  let tours = [];
 
   try {
-    const newUploadedUrls = await uploadPendingImages();
-    if (newUploadedUrls.length > 0) {
-      uploadedImageUrls = [...uploadedImageUrls, ...newUploadedUrls];
-      updateImageNameInput();
-    }
-  } catch (error) {
-    tourStatus.textContent = error.message;
-    if (submitButton) {
-      submitButton.disabled = false;
-      submitButton.textContent = originalSubmitLabel;
+    tours = await response.json();
+  } catch (_error) {
+    tours = [];
+  }
+
+  if (!response.ok) {
+    throw new Error(tours.message || 'Không tải được danh sách tour.');
+  }
+
+  allTours = Array.isArray(tours) ? tours : [];
+  renderTourStats(allTours);
+  renderTourList(allTours);
+}
+
+async function deleteTour(tourId) {
+  const targetTour = allTours.find((item) => item.id === Number(tourId));
+  const confirmed = await confirmTourDelete(targetTour?.title || '');
+
+  if (!confirmed) {
+    return;
+  }
+
+  const response = await fetch(`/api/admin/tours/${tourId}`, { method: 'DELETE' });
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.message || 'Không thể xóa tour.');
+  }
+
+  showToast(result.message || 'Đã xóa tour.');
+  tourStatus.textContent = result.message || 'Đã xóa tour.';
+  await loadTours();
+}
+
+tourAdminList.addEventListener('click', async (event) => {
+  const editButton = event.target.closest('.tour-edit-btn');
+  if (editButton) {
+    const tourId = Number(editButton.dataset.tourId);
+    const targetTour = allTours.find((item) => item.id === tourId);
+    if (targetTour) {
+      fillTourForm(targetTour);
     }
     return;
   }
 
+  const deleteButton = event.target.closest('.tour-delete-btn');
+  if (!deleteButton) {
+    return;
+  }
+
   try {
+    await deleteTour(deleteButton.dataset.tourId);
+  } catch (error) {
+    tourStatus.textContent = error.message || 'Xóa tour thất bại.';
+  }
+});
+
+tourForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const tourId = document.querySelector('#tour_form_id').value;
+  const isUpdate = Boolean(tourId);
+  const method = tourId ? 'PUT' : 'POST';
+  const url = tourId ? `/api/admin/tours/${tourId}` : '/api/admin/tours';
+
+  try {
+    if (pendingImageFiles.length > 0) {
+      const uploadedUrls = await uploadPendingImages();
+      uploadedImageUrls = [...uploadedImageUrls, ...uploadedUrls];
+      updateImageNameInput();
+      renderImagePreview();
+    }
+
     const response = await fetch(url, {
       method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(tourFormPayload())
     });
 
-    const result = await response.json().catch(() => ({ message: 'Máy chủ trả về dữ liệu không hợp lệ.' }));
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || 'Không thể lưu tour.');
+    }
 
-    if (response.ok) {
-      tourEditDialog.close();
-      await loadTours();
-      showToast(tourId ? 'Cập nhật thành công' : 'Thêm mới thành công');
+    if (isUpdate) {
+      tourStatus.textContent = '';
     } else {
-      if (response.status === 401) {
-        tourStatus.textContent = 'Phiên đăng nhập admin đã hết hạn. Vui lòng đăng nhập lại.';
-        setTimeout(() => {
-          window.location.href = '/?adminLogin=1';
-        }, 800);
-        return;
-      }
-
-      tourStatus.textContent = result.message || 'Không thể lưu tour.';
+      tourStatus.textContent = result.message || 'Đã lưu tour.';
     }
-  } catch (_error) {
-    tourStatus.textContent = 'Không thể kết nối máy chủ. Vui lòng thử lại.';
-  } finally {
-    if (submitButton) {
-      submitButton.disabled = false;
-      submitButton.textContent = originalSubmitLabel;
+    showToast(result.message || 'Đã lưu tour.');
+    resetTourForm();
+    if (tourEditDialog?.open) {
+      tourEditDialog.close();
     }
+    await loadTours();
+  } catch (error) {
+    tourStatus.textContent = error.message || 'Không thể lưu tour.';
   }
 });
 
-tourDialogClose.addEventListener('click', () => tourEditDialog.close());
-document.querySelector('#tour-dialog-cancel').addEventListener('click', () => tourEditDialog.close());
-
-tourCreateButton.addEventListener('click', () => {
-  resetTourForm();
-  tourEditDialog.showModal();
-});
-
-adminLogoutButton.addEventListener('click', async () => {
-  await fetch('/api/admin/logout', { method: 'POST' });
-  window.location.href = '/';
-});
-
-async function loadTours() {
-  const response = await fetch('/api/admin/tours');
-  allTours = await response.json();
-
-  const statEl = document.querySelector('#stat-tour-count');
-  if (statEl) statEl.textContent = allTours.length;
-  const capacityEl = document.querySelector('#stat-total-capacity');
-  if (capacityEl) capacityEl.textContent = allTours.reduce((s, t) => s + (Number.parseInt(t.fixed_guest_count, 10) || 12), 0);
-  const bookedEl = document.querySelector('#stat-total-booked');
-  if (bookedEl) bookedEl.textContent = allTours.reduce((s, t) => s + (Number.parseInt(t.booked_guest_count, 10) || 0), 0);
-
-  const q = tourSearchInput ? tourSearchInput.value.trim().toLowerCase() : '';
-  renderTourList(
-    q
-      ? allTours.filter((t) =>
-          (t.title || '').toLowerCase().includes(q) ||
-          (t.location || '').toLowerCase().includes(q) ||
-          (t.category || '').toLowerCase().includes(q)
-        )
-      : allTours
-  );
+if (tourCreateButton) {
+  tourCreateButton.addEventListener('click', () => {
+    resetTourForm();
+    tourEditDialog.showModal();
+  });
 }
 
-loadTours().catch(() => {
-  tourStatus.textContent = 'Không tải được dữ liệu tour.';
-});
+if (tourDialogClose) {
+  tourDialogClose.addEventListener('click', () => {
+    if (tourEditDialog?.open) {
+      tourEditDialog.close();
+    }
+  });
+}
 
-updateItineraryUi([{ title: '', content: '' }]);
+const tourDialogCancelButton = document.querySelector('#tour-dialog-cancel');
+if (tourDialogCancelButton) {
+  tourDialogCancelButton.addEventListener('click', () => {
+    resetTourForm();
+    if (tourEditDialog?.open) {
+      tourEditDialog.close();
+    }
+  });
+}
+
+if (tourEditDialog) {
+  tourEditDialog.addEventListener('cancel', (event) => {
+    event.preventDefault();
+    tourEditDialog.close();
+  });
+}
+
+if (adminLogoutButton) {
+  adminLogoutButton.addEventListener('click', async () => {
+    await fetch('/api/admin/logout', { method: 'POST' });
+    window.location.href = '/';
+  });
+}
+
+loadTours().catch((error) => {
+  tourStatus.textContent = error.message || 'Không tải được danh sách tour.';
+  renderTourStats([]);
+  renderTourList([]);
+});
 

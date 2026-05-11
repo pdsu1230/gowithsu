@@ -31,7 +31,7 @@ const BookingModel = {
       FROM bookings
       JOIN tours ON tours.id = bookings.tour_id
       LEFT JOIN booking_members ON booking_members.booking_id = bookings.id
-      GROUP BY bookings.id
+      GROUP BY bookings.id, tours.title, tours.category
       ORDER BY bookings.start_date ASC, tours.title ASC, bookings.created_at ASC
     `);
   },
@@ -42,12 +42,13 @@ const BookingModel = {
         bookings.tour_id,
         tours.title AS tour_title,
         bookings.start_date,
-        COUNT(booking_members.id) AS total_guests
+        COUNT(booking_members.id) AS total_guests,
+        bookings.start_date AS formatted_start_date
       FROM bookings
       JOIN tours ON tours.id = bookings.tour_id
       LEFT JOIN booking_members ON booking_members.booking_id = bookings.id
       WHERE bookings.start_date BETWEEN ? AND ?
-      GROUP BY bookings.tour_id, bookings.start_date
+      GROUP BY bookings.tour_id, tours.title, bookings.start_date
       ORDER BY bookings.start_date ASC, tours.title ASC
     `, [startDate, endDate]);
   },
@@ -66,13 +67,14 @@ const BookingModel = {
         bookings.tour_id,
         tours.title AS tour_title,
         bookings.start_date,
-        COUNT(booking_members.id) AS total_guests
+        COUNT(booking_members.id) AS total_guests,
+        bookings.start_date AS formatted_start_date
       FROM bookings
       JOIN tours ON tours.id = bookings.tour_id
       LEFT JOIN booking_members ON booking_members.booking_id = bookings.id
       WHERE bookings.start_date >= ?
         ${excludeClause}
-      GROUP BY bookings.tour_id, bookings.start_date
+      GROUP BY bookings.tour_id, tours.title, bookings.start_date
       ORDER BY bookings.start_date ASC, total_guests DESC, tours.title ASC
     `, params);
   },

@@ -48,11 +48,13 @@ function normalizePriceLabel(value) {
   }
 
   const digitsOnly = normalized.replace(/\D/g, '');
+  console.log('Normalized value:', normalized, 'Digits only:', digitsOnly);
   if (!digitsOnly) {
     return '';
   }
 
   const amount = Number.parseInt(digitsOnly, 10);
+  console.log('Parsed amount:', amount);
   if (Number.isNaN(amount)) {
     return '';
   }
@@ -207,10 +209,18 @@ function groupBookings(bookings) {
   return grouped;
 }
 
-function toLocalIsoDate(date) {
+function toLocalIsoDate(date, includeTime = false) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
+
+  if (includeTime) {
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
+
   return `${year}-${month}-${day}`;
 }
 
@@ -222,8 +232,8 @@ function getWeekRange(today = new Date()) {
   end.setDate(start.getDate() + 6);
 
   return {
-    startDate: toLocalIsoDate(start),
-    endDate: toLocalIsoDate(end)
+    startDate: toLocalIsoDate(start, true),
+    endDate: toLocalIsoDate(end, true)
   };
 }
 
@@ -302,7 +312,11 @@ const AdminController = {
   async getHistoryBookings(req, res) {
     const today = new Date();
     const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-    const bookings = (await BookingModel.getAllWithSummary()).filter((b) => b.start_date < todayStr);
+    const bookings = (await BookingModel.getAllWithSummary()).filter((b) => {
+      // Extract date-only from start_date (handle both 'YYYY-MM-DD' and 'YYYY-MM-DDTHH:mm:ss.sssZ' formats)
+      const dateOnly = String(b.start_date || '').split('T')[0];
+      return dateOnly < todayStr;
+    });
     // Group by tour + date descending
     const grouped = {};
     bookings.forEach((b) => {
@@ -317,8 +331,13 @@ const AdminController = {
           total_members: 0
         };
       }
-      grouped[key].bookings.push(b);
-      grouped[key].total_members += Number(b.member_count || 0);
+      const memberCount = Number(b.member_count || 0);
+      if (!Number.isNaN(memberCount)) {
+        grouped[key].bookings.push(b);
+        grouped[key].total_members += memberCount;
+      } else {
+        console.warn('Dữ liệu member_count không hợp lệ:', b);
+      }
     });
     const result = Object.values(grouped).sort((a, b) => b.start_date.localeCompare(a.start_date));
     res.json(result);

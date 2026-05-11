@@ -20,11 +20,14 @@ function normalizeMember(member) {
   };
 }
 
-function toLocalIsoDate(date) {
+function toLocalIsoDate(date, includeTime = false) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  return `${year}-${month}-${day}${includeTime ? `${hours}:${minutes}:${seconds}` : ''}`;
 }
 
 function getWeekendRange(today = new Date()) {
@@ -41,8 +44,8 @@ function getWeekendRange(today = new Date()) {
   sunday.setDate(saturday.getDate() + 1);
 
   return {
-    startDate: toLocalIsoDate(saturday),
-    endDate: toLocalIsoDate(sunday)
+    startDate: toLocalIsoDate(saturday, true),
+    endDate: toLocalIsoDate(sunday, true)
   };
 }
 
@@ -78,7 +81,7 @@ async function getFeaturedWeekendTour() {
 }
 
 async function getSuggestedUpcomingTour(excludeTourId) {
-  const today = toLocalIsoDate(new Date());
+  const today = toLocalIsoDate(new Date(), false);
   const upcomingTours = (await BookingModel.getUpcomingOverview(today, excludeTourId))
     .slice()
     .sort((left, right) => {
@@ -131,7 +134,7 @@ const PublicController = {
 
   async getRandomTour(req, res) {
     const excludeTourId = Number(req.query.excludeTourId || 0);
-    const today = toLocalIsoDate(new Date());
+    const today = toLocalIsoDate(new Date(), false);
 
     // Priority 1: upcoming tours sorted by date
     const upcomingTours = (await BookingModel.getUpcomingOverview(today, excludeTourId))
@@ -200,7 +203,7 @@ const PublicController = {
       JOIN tours ON tours.id = bookings.tour_id
       LEFT JOIN booking_members ON booking_members.booking_id = bookings.id
       WHERE bookings.start_date BETWEEN ? AND ?
-      GROUP BY bookings.tour_id, bookings.start_date
+      GROUP BY bookings.tour_id, tours.title, bookings.start_date
       ORDER BY bookings.start_date ASC, tours.title ASC
     `, [startDate, endDate]);
 

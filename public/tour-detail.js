@@ -35,16 +35,25 @@ function formatDateDisplay(value) {
     return '';
   }
 
-  const normalized = new Date(`${value}T00:00:00`);
+  const raw = String(value).trim();
+  if (!raw) {
+    return '';
+  }
+
+  const matchedIso = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (matchedIso) {
+    return `${matchedIso[3]}/${matchedIso[2]}/${matchedIso[1]}`;
+  }
+
+  const normalized = raw.includes('T') ? new Date(raw) : new Date(`${raw}T00:00:00`);
   if (Number.isNaN(normalized.getTime())) {
     return '';
   }
 
-  return normalized.toLocaleDateString('vi-VN', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  });
+  const day = String(normalized.getDate()).padStart(2, '0');
+  const month = String(normalized.getMonth() + 1).padStart(2, '0');
+  const year = normalized.getFullYear();
+  return `${day}/${month}/${year}`;
 }
 
 function updateDiscoverLinks(discoverUrl) {

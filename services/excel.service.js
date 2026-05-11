@@ -1,11 +1,23 @@
 const XLSX = require('xlsx');
 
 function formatDateDisplay(dateString) {
-  const date = new Date(dateString);
+  const normalized = String(dateString || '').trim();
+  if (!normalized) {
+    return '';
+  }
+
+  const date = normalized.includes('T')
+    ? new Date(normalized)
+    : new Date(`${normalized}T00:00:00`);
+
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+
   const day = String(date.getDate()).padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const year = date.getFullYear();
-  return `${day}-${month}-${year}`;
+  return `${day}/${month}/${year}`;
 }
 
 function buildTourWorkbook(rows) {
@@ -13,7 +25,7 @@ function buildTourWorkbook(rows) {
   const sheetRows = rows.map((row, index) => ({
     STT: index + 1,
     'Ho ten': row.name,
-    'Ngay sinh': row.dob || '',
+    'Ngay sinh': formatDateDisplay(row.dob),
     CCCD: row.cccd || '',
     SDT: row.phone || '',
     'Dia chi': row.address || '',
@@ -36,7 +48,7 @@ function buildWeeklyWorkbook(overviewRows, groupedRows) {
   const summarySheet = XLSX.utils.json_to_sheet(
     overviewRows.map((row) => ({
       Tour: row.tour_title,
-      Ngay: row.start_date,
+      Ngay: formatDateDisplay(row.start_date),
       'Tong khach': row.total_guests
     }))
   );
@@ -47,7 +59,7 @@ function buildWeeklyWorkbook(overviewRows, groupedRows) {
       rows.map((row, index) => ({
         STT: index + 1,
         'Ho ten': row.name,
-        'Ngay sinh': row.dob || '',
+        'Ngay sinh': formatDateDisplay(row.dob),
         CCCD: row.cccd || '',
         SDT: row.phone || '',
         'Dia chi': row.address || '',

@@ -15,14 +15,44 @@ if (adminLogoutBtn) {
 
 // --- Helpers ---
 function formatDate(dateStr) {
-  if (!dateStr) return '—';
-  const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('vi-VN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+  if (!dateStr) return '--/--/----';
+  const dateOnly = normalizeDateOnly(dateStr);
+  if (!dateOnly) return '--/--/----';
+  const [year, month, day] = dateOnly.split('-');
+  return `${day}/${month}/${year}`;
 }
 
 function formatMonthYear(dateStr) {
   const d = new Date(dateStr + 'T00:00:00');
   return d.toLocaleDateString('vi-VN', { month: 'long', year: 'numeric' });
+}
+
+function normalizeDateOnly(value) {
+  if (!value) return '';
+  const text = String(value).trim();
+  if (!text) return '';
+
+  const matchedIso = text.match(/^(\d{4}-\d{2}-\d{2})/);
+  if (matchedIso) {
+    return matchedIso[1];
+  }
+
+  const parsed = new Date(text);
+  if (Number.isNaN(parsed.getTime())) {
+    return '';
+  }
+
+  const year = parsed.getFullYear();
+  const month = String(parsed.getMonth() + 1).padStart(2, '0');
+  const day = String(parsed.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function formatDisplayDate(value) {
+  const dateOnly = normalizeDateOnly(value);
+  if (!dateOnly) return '--/--/----';
+  const [year, month, day] = dateOnly.split('-');
+  return `${day}/${month}/${year}`;
 }
 
 function normalizeCategoryValue(rawValue) {
@@ -79,7 +109,7 @@ function buildMemberTable(members) {
           ${members.map((m) => `
             <tr class="border-t border-primary/10">
               <td class="whitespace-nowrap px-3 py-3 align-middle">${m.name}</td>
-              <td class="whitespace-nowrap px-3 py-3 align-middle">${m.dob || ''}</td>
+              <td class="whitespace-nowrap px-3 py-3 align-middle">${formatDisplayDate(m.dob)}</td>
               <td class="whitespace-nowrap px-3 py-3 align-middle">${m.cccd || ''}</td>
               <td class="whitespace-nowrap px-3 py-3 align-middle">${m.phone || ''}</td>
               <td class="whitespace-nowrap px-3 py-3 align-middle">${m.address || ''}</td>

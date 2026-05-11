@@ -21,6 +21,24 @@ function readSqliteData(sqlitePath) {
   return { tours, bookings, members };
 }
 
+function sanitizeRelations(tours, bookings, members) {
+  const validTourIds = new Set(tours.map((row) => row.id));
+  const validBookings = bookings.filter((row) => validTourIds.has(row.tour_id));
+
+  const removedBookingCount = bookings.length - validBookings.length;
+  const validBookingIds = new Set(validBookings.map((row) => row.id));
+  const validMembers = members.filter((row) => validBookingIds.has(row.booking_id));
+  const removedMemberCount = members.length - validMembers.length;
+
+  return {
+    tours,
+    bookings: validBookings,
+    members: validMembers,
+    removedBookingCount,
+    removedMemberCount
+  };
+}
+
 async function resetTargetTables(client) {
   await client.query('TRUNCATE TABLE booking_members, bookings, tours RESTART IDENTITY CASCADE');
 }
@@ -137,9 +155,19 @@ async function insertMembers(client, members) {
 
 async function main() {
   const sqlitePath = getSqlitePath();
-  const { tours, bookings, members } = readSqliteData(sqlitePath);
+  const raw = readSqliteData(sqlitePath);
+  const { tours, bookings, members, removedBookingCount, removedMemberCount } = sanitizeRelations(
+    raw.tours,
+    raw.bookings,
+    raw.members
+  );
 
   console.log(`Read from SQLite: tours=${tours.length}, bookings=${bookings.length}, members=${members.length}`);
+  if (removedBookingCount > 0 || removedMemberCount > 0) {
+    console.log(
+      `Skipped orphan records: bookings=${removedBookingCount}, members=${removedMemberCount}`
+    );
+  }
 
   await initSchema();
   const pool = getPool();

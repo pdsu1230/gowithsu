@@ -1,4 +1,8 @@
 const { Pool } = require('pg');
+const dns = require('dns');
+
+// Set IPv6 first for Supabase free tier
+dns.setDefaultResultOrder('ipv6first');
 
 let pool = null;
 
@@ -17,7 +21,8 @@ function getPool() {
 
   pool = new Pool({
     connectionString: getDatabaseUrl(),
-    ssl: process.env.PG_SSL === 'true' ? { rejectUnauthorized: false } : false
+    ssl: process.env.PG_SSL === 'true' ? { rejectUnauthorized: false } : false,
+    family: 6  // Prefer IPv6 for Supabase free tier
   });
 
   return pool;

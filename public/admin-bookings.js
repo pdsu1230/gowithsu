@@ -11,6 +11,137 @@ const deleteMemberConfirmCancelButton = document.querySelector('#delete-member-c
 const deleteMemberConfirmSubmitButton = document.querySelector('#delete-member-confirm-submit');
 let deleteMemberConfirmResolver = null;
 
+function showToast(message) {
+  const existing = document.querySelector('#admin-bookings-toast');
+  if (existing) {
+    existing.remove();
+  }
+
+  const toast = document.createElement('div');
+  toast.id = 'admin-bookings-toast';
+  toast.textContent = String(message || '').trim() || 'Đã tải thành công';
+  toast.style.cssText = [
+    'position:fixed',
+    'bottom:24px',
+    'left:50%',
+    'transform:translateX(-50%)',
+    'background:#143600',
+    'color:#ffffff',
+    'padding:10px 18px',
+    'border-radius:999px',
+    'font-size:13px',
+    'font-weight:700',
+    'box-shadow:0 8px 24px rgba(20,54,0,0.25)',
+    'z-index:9999',
+    'opacity:0',
+    'transition:opacity 0.2s ease, transform 0.2s ease',
+    'pointer-events:none'
+  ].join(';');
+
+  document.body.appendChild(toast);
+  requestAnimationFrame(() => {
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(-50%) translateY(-6px)';
+  });
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+    setTimeout(() => toast.remove(), 220);
+  }, 2200);
+}
+
+function toLocalIsoDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function formatDisplayDate(value) {
+  const dateOnly = normalizeDateOnly(value);
+  if (!dateOnly) {
+    return '--/--/----';
+  }
+
+  const [year, month, day] = dateOnly.split('-');
+  return `${day}/${month}/${year}`;
+}
+
+function normalizeDateOnly(value) {
+  if (!value) {
+    return '';
+  }
+
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return toLocalIsoDate(value);
+  }
+
+  const text = String(value).trim();
+  if (!text) {
+    return '';
+  }
+
+  const matchedIso = text.match(/^(\d{4}-\d{2}-\d{2})/);
+  if (matchedIso) {
+    return matchedIso[1];
+  }
+
+  const parsed = new Date(text);
+  if (Number.isNaN(parsed.getTime())) {
+    return '';
+  }
+
+  return toLocalIsoDate(parsed);
+}
+
+function normalizeBookingDateOnly(value) {
+  if (!value) {
+    return '';
+  }
+
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return toLocalIsoDate(value);
+  }
+
+  const text = String(value).trim();
+  if (!text) {
+    return '';
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(text)) {
+    return text;
+  }
+
+  const parsed = new Date(text);
+  if (!Number.isNaN(parsed.getTime())) {
+    return toLocalIsoDate(parsed);
+  }
+
+  const matchedIso = text.match(/^(\d{4}-\d{2}-\d{2})/);
+  return matchedIso ? matchedIso[1] : '';
+}
+
+function parseDateParts(value) {
+  const dateOnly = normalizeBookingDateOnly(value);
+  if (!dateOnly) {
+    return null;
+  }
+
+  const parsed = new Date(`${dateOnly}T00:00:00`);
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+
+  return {
+    dateOnly,
+    date: parsed,
+    day: String(parsed.getDate()).padStart(2, '0'),
+    month: String(parsed.getMonth() + 1).padStart(2, '0'),
+    year: String(parsed.getFullYear())
+  };
+}
+
 function closeDeleteMemberConfirmDialog(confirmed) {
   if (deleteMemberConfirmDialog && deleteMemberConfirmDialog.open) {
     deleteMemberConfirmDialog.close();
@@ -87,10 +218,13 @@ function buildMemberTable(members) {
       <tbody class="bg-white text-slate-700">
         ${members
           .map(
-            (member) => `
+            (member) => {
+              const startDateValue = normalizeBookingDateOnly(member.start_date);
+              const dobValue = formatDisplayDate(member.dob);
+              return `
               <tr class="border-t border-primary/10">
                 <td class="whitespace-nowrap px-3 py-3 align-middle">${member.name}</td>
-                <td class="whitespace-nowrap px-3 py-3 align-middle">${member.dob || ''}</td>
+                <td class="whitespace-nowrap px-3 py-3 align-middle">${dobValue}</td>
                 <td class="whitespace-nowrap px-3 py-3 align-middle">${member.cccd || ''}</td>
                 <td class="whitespace-nowrap px-3 py-3 align-middle">${member.phone || ''}</td>
                 <td class="whitespace-nowrap px-3 py-3 align-middle">${member.address || ''}</td>
@@ -102,7 +236,7 @@ function buildMemberTable(members) {
                 <td class="whitespace-nowrap px-3 py-3 align-middle">${member.borrow_trekking_pole ? 'Có' : 'Không'}</td>
                 <td class="date-edit-cell whitespace-nowrap px-3 py-3 align-middle" data-booking-id="${member.booking_id}">
                   <div class="flex items-center gap-2">
-                    <input class="date-edit-input w-36 rounded-lg border border-primary/20 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 outline-none focus:border-primary/45 focus:ring-2 focus:ring-primary/20" type="date" value="${member.start_date || ''}" />
+                    <input class="date-edit-input w-36 rounded-lg border border-primary/20 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 outline-none focus:border-primary/45 focus:ring-2 focus:ring-primary/20" type="date" value="${startDateValue}" />
                     <button class="date-save-btn inline-flex h-8 w-8 items-center justify-center rounded-lg border border-primary/15 bg-primary/5 text-primary transition-colors hover:bg-primary/10" type="button" aria-label="Lưu ngày" title="Lưu ngày"><span class="material-symbols-outlined text-base">save</span></button>
                   </div>
                 </td>
@@ -110,7 +244,8 @@ function buildMemberTable(members) {
                   <button class="member-delete-btn inline-flex h-8 w-8 items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-500 transition-colors hover:bg-red-100" type="button" data-member-id="${member.id}" aria-label="Xóa thành viên" title="Xóa thành viên"><span class="material-symbols-outlined text-base">person_remove</span></button>
                 </td>
               </tr>
-            `
+            `;
+            }
           )
           .join('')}
       </tbody>
@@ -136,7 +271,8 @@ function attachDateSaveHandlers(container) {
         });
         if (res.ok) {
           btn.innerHTML = '<span class="material-symbols-outlined text-base">check_circle</span>';
-          bookingStatus.textContent = 'Đã cập nhật ngày khởi hành.';
+          bookingStatus.textContent = '';
+          showToast('Cập nhật thành công');
           loadBookings();
         } else {
           const data = await res.json();
@@ -196,8 +332,20 @@ function renderStats(flat) {
   const statMembersEl = document.querySelector('#stat-members');
   const statToursEl = document.querySelector('#stat-tours');
   if (!statGroupsEl) return;
-  const totalMembers = flat.reduce((s, g) => s + g.items.reduce((ss, i) => ss + i.member_count, 0), 0);
+
+  const totalMembers = flat.reduce((s, g) => {
+    return s + g.items.reduce((ss, i) => {
+      const memberCount = Number(i.member_count || 0);
+      if (Number.isNaN(memberCount)) {
+        console.warn('Dữ liệu member_count không hợp lệ:', i);
+        return ss;
+      }
+      return ss + memberCount;
+    }, 0);
+  }, 0);
+
   const uniqueTours = new Set(flat.map((g) => g.tourId)).size;
+
   statGroupsEl.textContent = flat.length;
   statMembersEl.textContent = totalMembers;
   statToursEl.textContent = uniqueTours;
@@ -284,7 +432,8 @@ function renderGroups(groups) {
       bookingStatus.textContent = 'Đang tạo file Excel...';
       try {
         await downloadFile(`/api/admin/export/tour/${btn.dataset.tourId}/${btn.dataset.date}`, 'tour.xlsx');
-        bookingStatus.textContent = 'Đã tải file Excel.';
+        bookingStatus.textContent = '';
+        showToast('Đã tải thành công');
       } catch (error) {
         bookingStatus.textContent = error.message;
       }
@@ -302,15 +451,33 @@ async function loadBookings() {
       flat.push({ tourName, tourId: items[0]?.tour_id, date, items });
     }
   }
-  flat.sort((a, b) => new Date(a.date) - new Date(b.date));
+  flat.sort((a, b) => {
+    const left = parseDateParts(a.date)?.date;
+    const right = parseDateParts(b.date)?.date;
+    if (left && right) {
+      return left - right;
+    }
+    return String(a.date || '').localeCompare(String(b.date || ''));
+  });
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const upcoming = flat.filter((g) => new Date(g.date) >= today);
+  const today = toLocalIsoDate(new Date());
+  const upcoming = flat.filter((g) => {
+    const dateOnly = normalizeBookingDateOnly(g.date);
+    return Boolean(dateOnly) && dateOnly >= today;
+  });
 
-  allGroups = upcoming;
-  renderStats(upcoming);
-  renderGroups(upcoming);
+  const upcomingWithMembers = upcoming.filter((group) => {
+    const totalMembers = group.items.reduce((sum, item) => {
+      const memberCount = Number(item.member_count || 0);
+      return sum + (Number.isNaN(memberCount) ? 0 : memberCount);
+    }, 0);
+
+    return totalMembers > 0;
+  });
+
+  allGroups = upcomingWithMembers;
+  renderStats(upcomingWithMembers);
+  renderGroups(upcomingWithMembers);
 }
 
 adminLogoutButton.addEventListener('click', async () => {
@@ -322,7 +489,8 @@ exportWeekButton.addEventListener('click', async () => {
   bookingStatus.textContent = 'Đang tạo file Excel tuần này...';
   try {
     await downloadFile('/api/admin/export/week', 'Tour-tuan.xlsx');
-    bookingStatus.textContent = 'Đã tải file tổng hợp tuần.';
+    bookingStatus.textContent = '';
+    showToast('Đã tải thành công');
   } catch (error) {
     bookingStatus.textContent = error.message;
   }
