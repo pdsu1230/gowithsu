@@ -23,7 +23,16 @@ function formatDate(dateStr) {
 }
 
 function formatMonthYear(dateStr) {
-  const d = new Date(dateStr + 'T00:00:00');
+  const dateOnly = normalizeDateOnly(dateStr);
+  if (!dateOnly) {
+    return 'Không rõ tháng';
+  }
+
+  const d = new Date(`${dateOnly}T00:00:00`);
+  if (Number.isNaN(d.getTime())) {
+    return 'Không rõ tháng';
+  }
+
   return d.toLocaleDateString('vi-VN', { month: 'long', year: 'numeric' });
 }
 
@@ -175,8 +184,9 @@ function renderGroups(groups) {
   // Group by month
   const byMonth = {};
   groups.forEach((g) => {
-    const key = g.start_date.slice(0, 7);
-    const label = formatMonthYear(g.start_date);
+    const normalizedStartDate = normalizeDateOnly(g.start_date);
+    const key = normalizedStartDate ? normalizedStartDate.slice(0, 7) : 'unknown';
+    const label = formatMonthYear(normalizedStartDate || g.start_date);
     if (!byMonth[key]) byMonth[key] = { label, groups: [] };
     byMonth[key].groups.push(g);
   });
@@ -192,10 +202,13 @@ function renderGroups(groups) {
 
       <div class="space-y-3">
         ${mGroups.map((g) => {
-          const d = new Date(g.start_date + 'T00:00:00');
-          const dayNum = String(d.getDate()).padStart(2, '0');
-          const weekday = ['CN','T2','T3','T4','T5','T6','T7'][d.getDay()];
-          const monthStr = `Th${d.getMonth() + 1}`;
+          const dateOnly = normalizeDateOnly(g.start_date);
+          const d = dateOnly ? new Date(`${dateOnly}T00:00:00`) : null;
+          const isValidDate = Boolean(d) && !Number.isNaN(d.getTime());
+          const dayNum = isValidDate ? String(d.getDate()).padStart(2, '0') : '--';
+          const weekday = isValidDate ? ['CN','T2','T3','T4','T5','T6','T7'][d.getDay()] : '--';
+          const monthStr = isValidDate ? `Th${d.getMonth() + 1}` : '--';
+          const exportDate = dateOnly || '';
 
           return `
           <article class="overflow-hidden rounded-2xl border border-primary/10 bg-white shadow-sm transition-shadow hover:shadow-md">
@@ -222,7 +235,7 @@ function renderGroups(groups) {
 
               <!-- Actions -->
               <div class="flex items-center gap-2 flex-shrink-0">
-                <a href="/api/admin/export/tour/${g.tour_id}/${g.start_date}" class="inline-flex h-9 items-center gap-1.5 rounded-xl border border-primary/15 bg-primary/5 px-3 text-xs font-semibold text-primary transition-colors hover:bg-primary/10">
+                <a href="/api/admin/export/tour/${g.tour_id}/${exportDate}" class="inline-flex h-9 items-center gap-1.5 rounded-xl border border-primary/15 bg-primary/5 px-3 text-xs font-semibold text-primary transition-colors hover:bg-primary/10">
                   <span class="material-symbols-outlined text-sm">table_chart</span>
                   Excel
                 </a>

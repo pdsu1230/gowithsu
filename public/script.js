@@ -39,6 +39,29 @@ function formatBadge(label, value) {
   return value || 'Đang cập nhật';
 }
 
+function parseScheduleDate(value) {
+  const rawValue = String(value || '').trim();
+
+  if (!rawValue) {
+    return null;
+  }
+
+  const normalizedValue = rawValue.includes('T') ? rawValue : `${rawValue}T00:00:00`;
+  const parsedDate = new Date(normalizedValue);
+
+  if (!Number.isNaN(parsedDate.getTime())) {
+    return parsedDate;
+  }
+
+  const dateOnlyMatch = rawValue.match(/^(\d{4}-\d{2}-\d{2})/);
+  if (dateOnlyMatch) {
+    const fallbackDate = new Date(`${dateOnlyMatch[1]}T00:00:00`);
+    return Number.isNaN(fallbackDate.getTime()) ? null : fallbackDate;
+  }
+
+  return null;
+}
+
 function difficultyChip(d) {
   const v = String(d || '').toLowerCase();
   const label = (v.includes('trung') || v === 'trung b?nh') ? 'TB' : (d || 'Đang cập nhật');
@@ -278,7 +301,12 @@ function renderTours(tours) {
       (tour) => {
         const nextDateBadge = tour.next_date
           ? (() => {
-              const d = new Date(tour.next_date + 'T00:00:00');
+              const d = parseScheduleDate(tour.next_date);
+
+              if (!d) {
+                return '<div class="absolute bottom-3 left-3 md:bottom-4 md:left-4"><span class="inline-flex items-center gap-1 bg-primary text-on-primary text-[9px] md:text-[10px] font-black px-2.5 md:px-3 py-1 md:py-1.5 rounded-full shadow-lg"><span class="material-symbols-outlined text-xs md:text-sm" style="font-variation-settings:\'FILL\' 1">event</span>Khởi hành sắp cập nhật</span></div>';
+              }
+
               const label = d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
               return `<div class="absolute bottom-3 left-3 md:bottom-4 md:left-4"><span class="inline-flex items-center gap-1 bg-primary text-on-primary text-[9px] md:text-[10px] font-black px-2.5 md:px-3 py-1 md:py-1.5 rounded-full shadow-lg"><span class="material-symbols-outlined text-xs md:text-sm" style="font-variation-settings:'FILL' 1">event</span>Khởi hành ${label}</span></div>`;
             })()
@@ -375,7 +403,10 @@ async function loadUpcomingSchedule() {
   // Group by month
   const byMonth = {};
   rows.forEach((row) => {
-    const d = new Date(row.start_date + 'T00:00:00');
+    const d = parseScheduleDate(row.start_date);
+    if (!d) {
+      return;
+    }
     const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
     const label = d.toLocaleDateString('vi-VN', { month: 'long', year: 'numeric' });
     if (!byMonth[key]) byMonth[key] = { label, rows: [] };
@@ -396,7 +427,10 @@ async function loadUpcomingSchedule() {
         <!-- Rows -->
         <div class="divide-y divide-white/5">
           ${month.rows.map((row) => {
-            const d = new Date(row.start_date + 'T00:00:00');
+            const d = parseScheduleDate(row.start_date);
+            if (!d) {
+              return '';
+            }
             const day = String(d.getDate()).padStart(2, '0');
             const weekday = WEEKDAYS[d.getDay()];
             const guestCount = Number(row.total_guests);

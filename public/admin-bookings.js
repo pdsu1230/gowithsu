@@ -365,10 +365,11 @@ function renderGroups(groups) {
   bookingGroups.innerHTML = groups
     .map(({ tourName, tourId, date, items }) => {
       const guestCount = items.reduce((sum, item) => sum + item.member_count, 0);
-      const d = new Date(date + 'T00:00:00');
-      const day = String(d.getDate()).padStart(2, '0');
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const year = d.getFullYear();
+      const parsedDateParts = parseDateParts(date);
+      const day = parsedDateParts?.day || '--';
+      const month = parsedDateParts?.month || '--';
+      const year = parsedDateParts?.year || '----';
+      const exportDate = parsedDateParts?.dateOnly || normalizeBookingDateOnly(date) || '';
       const bookingIds = items.map((b) => b.id).join(',');
       return `
         <article class="overflow-hidden rounded-2xl border border-primary/10 bg-white shadow-sm transition-shadow hover:shadow-md">
@@ -387,7 +388,7 @@ function renderGroups(groups) {
               </div>
               <div class="flex shrink-0 items-center gap-2">
                 <button class="export-tour-btn inline-flex h-9 items-center gap-1.5 rounded-xl border border-primary/15 bg-primary/5 px-3 text-xs font-semibold text-primary transition-colors hover:bg-primary/10"
-                  data-tour-id="${tourId}" data-date="${date}" type="button" title="Xuất Excel">
+                  data-tour-id="${tourId}" data-date="${exportDate}" type="button" title="Xuất Excel">
                   <span class="material-symbols-outlined text-sm">table_chart</span>
                   Excel
                 </button>
