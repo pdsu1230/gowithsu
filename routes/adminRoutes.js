@@ -40,6 +40,7 @@ router.get('/bookings', AdminController.getBookings);
 router.get('/bookings/history', AdminController.getHistoryBookings);
 router.get('/bookings/:bookingId/members', AdminController.getBookingMembers);
 router.delete('/members/:memberId', AdminController.deleteMember);
+router.patch('/members/:memberId/date', AdminController.updateMemberDate);
 router.patch('/bookings/:bookingId/date', AdminController.updateBookingDate);
 router.get('/export/tour/:tourId/:date', AdminController.exportTour);
 router.get('/export/week', AdminController.exportWeek);

@@ -313,9 +313,8 @@ const AdminController = {
     const today = new Date();
     const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
     const bookings = (await BookingModel.getAllWithSummary()).filter((b) => {
-      // Extract date-only from start_date (handle both 'YYYY-MM-DD' and 'YYYY-MM-DDTHH:mm:ss.sssZ' formats)
-      const dateOnly = String(b.start_date || '').split('T')[0];
-      return dateOnly < todayStr;
+      const dateOnly = String(b.start_date || '').match(/^(\d{4}-\d{2}-\d{2})/)?.[1] || '';
+      return Boolean(dateOnly) && dateOnly < todayStr;
     });
     // Group by tour + date descending
     const grouped = {};
@@ -368,6 +367,55 @@ const AdminController = {
     }
     await BookingModel.updateStartDate(bookingId, start_date);
     res.json({ message: 'Đã cập nhật ngày khởi hành.' });
+  },
+
+  async updateMemberDate(req, res) {
+    const memberId = Number(req.params.memberId);
+    const { start_date } = req.body;
+
+    if (!memberId) {
+      return res.status(400).json({ message: 'ID thành viên không hợp lệ.' });
+    }
+
+    if (!start_date || !/^\d{4}-\d{2}-\d{2}$/.test(start_date)) {
+      return res.status(400).json({ message: 'Ngày khởi hành không hợp lệ.' });
+    }
+
+    const member = await BookingMemberModel.getById(memberId);
+    if (!member) {
+      return res.status(404).json({ message: 'Không tìm thấy thành viên.' });
+    }
+
+    const currentBooking = await BookingModel.getById(member.booking_id);
+    if (!currentBooking) {
+      return res.status(404).json({ message: 'Không tìm thấy booking hiện tại.' });
+    }
+
+    if (String(currentBooking.start_date || '').slice(0, 10) === start_date) {
+      return res.json({ message: 'Ngày khởi hành không thay đổi.' });
+    }
+
+    let targetBooking = await BookingModel.findByTourDateAndContact(
+      currentBooking.tour_id,
+      start_date,
+      currentBooking.contact_name,
+      currentBooking.contact_phone,
+      currentBooking.contact_email
+    );
+
+    if (!targetBooking) {
+      const newBookingId = await BookingModel.createFromExisting(currentBooking, start_date);
+      targetBooking = await BookingModel.getById(newBookingId);
+    }
+
+    await BookingMemberModel.updateBookingId(memberId, targetBooking.id);
+
+    const remainingMembers = await BookingMemberModel.countByBookingId(currentBooking.id);
+    if (remainingMembers === 0) {
+      await BookingModel.deleteById(currentBooking.id);
+    }
+
+    return res.json({ message: 'Đã cập nhật ngày khởi hành cho thành viên.' });
   },
 
   async exportTour(req, res) {

@@ -234,7 +234,7 @@ function buildMemberTable(members) {
                 <td class="whitespace-nowrap px-3 py-3 align-middle">${member.borrow_bag ? 'Có' : 'Không'}</td>
                 <td class="whitespace-nowrap px-3 py-3 align-middle">${member.borrow_headlamp ? 'Có' : 'Không'}</td>
                 <td class="whitespace-nowrap px-3 py-3 align-middle">${member.borrow_trekking_pole ? 'Có' : 'Không'}</td>
-                <td class="date-edit-cell whitespace-nowrap px-3 py-3 align-middle" data-booking-id="${member.booking_id}">
+                <td class="date-edit-cell whitespace-nowrap px-3 py-3 align-middle" data-member-id="${member.id}" data-booking-id="${member.booking_id}">
                   <div class="flex items-center gap-2">
                     <input class="date-edit-input w-36 rounded-lg border border-primary/20 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 outline-none focus:border-primary/45 focus:ring-2 focus:ring-primary/20" type="date" value="${startDateValue}" />
                     <button class="date-save-btn inline-flex h-8 w-8 items-center justify-center rounded-lg border border-primary/15 bg-primary/5 text-primary transition-colors hover:bg-primary/10" type="button" aria-label="Lưu ngày" title="Lưu ngày"><span class="material-symbols-outlined text-base">save</span></button>
@@ -264,7 +264,7 @@ function attachDateSaveHandlers(container) {
       btn.disabled = true;
       btn.innerHTML = '<span class="material-symbols-outlined text-base animate-spin">refresh</span>';
       try {
-        const res = await fetch(`/api/admin/bookings/${cell.dataset.bookingId}/date`, {
+        const res = await fetch(`/api/admin/members/${cell.dataset.memberId}/date`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ start_date: newDate })
@@ -364,7 +364,11 @@ function renderGroups(groups) {
 
   bookingGroups.innerHTML = groups
     .map(({ tourName, tourId, date, items }) => {
-      const guestCount = items.reduce((sum, item) => sum + item.member_count, 0);
+      const guestCount = items.reduce((sum, item) => {
+        const memberCount = Number(item.member_count || 0);
+        return sum + (Number.isNaN(memberCount) ? 0 : memberCount);
+      }, 0);
+      const guestCountLabel = String(guestCount).padStart(2, '0');
       const parsedDateParts = parseDateParts(date);
       const day = parsedDateParts?.day || '--';
       const month = parsedDateParts?.month || '--';
@@ -383,7 +387,7 @@ function renderGroups(groups) {
               <div class="flex-1 min-w-0">
                 <h3 class="truncate text-base font-extrabold tracking-tight text-primary">${tourName}</h3>
                 <div class="mt-1.5 flex items-center gap-4 text-sm text-secondary">
-                  <span class="flex items-center gap-1.5"><span class="material-symbols-outlined" style="font-size:15px">group</span>${guestCount} thành viên</span>
+                  <span class="flex items-center gap-1.5"><span class="material-symbols-outlined" style="font-size:15px">group</span>${guestCountLabel} thành viên</span>
                 </div>
               </div>
               <div class="flex shrink-0 items-center gap-2">

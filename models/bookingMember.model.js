@@ -50,6 +50,19 @@ const BookingMemberModel = {
     `, [bookingId]);
   },
 
+  async getById(memberId) {
+    return db.get('SELECT * FROM booking_members WHERE id = ?', [memberId]);
+  },
+
+  async updateBookingId(memberId, bookingId) {
+    return db.run('UPDATE booking_members SET booking_id = ? WHERE id = ?', [bookingId, memberId]);
+  },
+
+  async countByBookingId(bookingId) {
+    const row = await db.get('SELECT COUNT(1) AS total FROM booking_members WHERE booking_id = ?', [bookingId]);
+    return Number(row?.total || 0);
+  },
+
   async deleteById(memberId) {
     return db.run('DELETE FROM booking_members WHERE id = ?', [memberId]);
   }

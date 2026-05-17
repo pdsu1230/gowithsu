@@ -114,6 +114,46 @@ const BookingModel = {
     );
   },
 
+  async findByTourDateAndContact(tourId, startDate, contactName, contactPhone, contactEmail) {
+    return db.get(`
+      SELECT *
+      FROM bookings
+      WHERE tour_id = ?
+        AND start_date = ?
+        AND contact_name = ?
+        AND contact_phone = ?
+        AND contact_email = ?
+      LIMIT 1
+    `, [tourId, startDate, contactName, contactPhone, contactEmail]);
+  },
+
+  async createFromExisting(booking, newDate) {
+    const result = await db.run(`
+      INSERT INTO bookings (
+        tour_id,
+        start_date,
+        contact_name,
+        contact_phone,
+        contact_email,
+        status
+      )
+      VALUES (?, ?, ?, ?, ?, ?)
+    `, [
+      booking.tour_id,
+      newDate,
+      booking.contact_name,
+      booking.contact_phone,
+      booking.contact_email,
+      booking.status || 'pending'
+    ]);
+
+    return result.lastInsertRowid;
+  },
+
+  async deleteById(bookingId) {
+    return db.run('DELETE FROM bookings WHERE id = ?', [bookingId]);
+  },
+
   async getById(bookingId) {
     return db.get(`SELECT * FROM bookings WHERE id = ?`, [bookingId]);
   }
