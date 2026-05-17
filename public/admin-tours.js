@@ -750,7 +750,7 @@ function renderTourList(tours) {
         <article class="list-card rounded-2xl border border-primary/10 bg-white shadow-sm overflow-hidden transition-shadow hover:shadow-md">
           <div class="list-card__image h-52 overflow-hidden bg-surface-container-low flex-shrink-0">
             ${primaryImage
-              ? `<img class="h-full w-full object-cover" src="${primaryImage}" alt="Ảnh tour ${tour.title}" loading="lazy" />`
+              ? `<img class="h-full w-full object-cover" src="${primaryImage}" alt="Ảnh tour ${tour.title}" loading="lazy" width="512" height="384" />`
               : `<div class="flex h-full w-full items-center justify-center text-slate-300"><span class="material-symbols-outlined text-5xl">image</span></div>`}
           </div>
           <div class="list-card__content flex min-w-0 flex-1 flex-col gap-3 p-5">
@@ -894,11 +894,7 @@ tourForm.addEventListener('submit', async (event) => {
       throw new Error(result.message || 'Không thể lưu tour.');
     }
 
-    if (isUpdate) {
-      tourStatus.textContent = '';
-    } else {
-      tourStatus.textContent = result.message || 'Đã lưu tour.';
-    }
+    tourStatus.textContent = '';
     showToast(result.message || 'Đã lưu tour.');
     resetTourForm();
     if (tourEditDialog?.open) {
