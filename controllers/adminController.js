@@ -224,6 +224,33 @@ function toLocalIsoDate(date, includeTime = false) {
   return `${year}-${month}-${day}`;
 }
 
+function normalizeDateOnly(value) {
+  if (!value) {
+    return '';
+  }
+
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return toLocalIsoDate(value);
+  }
+
+  const text = String(value).trim();
+  if (!text) {
+    return '';
+  }
+
+  const isoMatch = text.match(/^(\d{4}-\d{2}-\d{2})/);
+  if (isoMatch) {
+    return isoMatch[1];
+  }
+
+  const parsed = new Date(text);
+  if (Number.isNaN(parsed.getTime())) {
+    return '';
+  }
+
+  return toLocalIsoDate(parsed);
+}
+
 function getWeekRange(today = new Date()) {
   const currentDay = today.getDay() || 7;
   const start = new Date(today);
@@ -311,11 +338,17 @@ const AdminController = {
 
   async getHistoryBookings(req, res) {
     const today = new Date();
-    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-    const bookings = (await BookingModel.getAllWithSummary()).filter((b) => {
-      const dateOnly = String(b.start_date || '').match(/^(\d{4}-\d{2}-\d{2})/)?.[1] || '';
-      return Boolean(dateOnly) && dateOnly < todayStr;
-    });
+    const todayStr = toLocalIsoDate(today);
+    const bookings = (await BookingModel.getAllWithSummary())
+      .map((booking) => {
+        const dateOnly = normalizeDateOnly(booking.start_date);
+        return {
+          ...booking,
+          start_date: dateOnly
+        };
+      })
+      .filter((booking) => Boolean(booking.start_date) && booking.start_date <= todayStr);
+
     // Group by tour + date descending
     const grouped = {};
     bookings.forEach((b) => {
@@ -338,7 +371,7 @@ const AdminController = {
         console.warn('Dữ liệu member_count không hợp lệ:', b);
       }
     });
-    const result = Object.values(grouped).sort((a, b) => b.start_date.localeCompare(a.start_date));
+    const result = Object.values(grouped).sort((a, b) => String(b.start_date || '').localeCompare(String(a.start_date || '')));
     res.json(result);
   },
 
