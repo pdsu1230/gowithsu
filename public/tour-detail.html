@@ -89,10 +89,7 @@
 
     @media (max-width: 767px) {
       .tour-detail-hero-summary {
-        display: -webkit-box;
-        -webkit-line-clamp: 5;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+        display: none;
       }
 
       #tour-detail-gallery {
@@ -218,6 +215,13 @@
             <p id="tour-detail-price-note" class="hidden"></p>
           </div>
         </div>
+      </div>
+      <div class="mt-5 space-y-3 md:hidden">
+        <h2 class="flex items-center gap-3 text-xl font-extrabold text-primary">
+          <span class="h-1 w-8 rounded-full bg-primary"></span>
+          Mô tả chuyến đi
+        </h2>
+        <p id="tour-detail-summary-mobile" class="whitespace-pre-line text-base leading-relaxed text-on-surface/80">Đang cập nhật mô tả tour.</p>
       </div>
     </section>
 

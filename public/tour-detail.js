@@ -409,6 +409,10 @@ function getDetailValue(tour, key, fallback) {
 
 function renderItinerary(tour) {
   const itineraryContainer = document.querySelector('#tour-detail-itinerary');
+  if (!itineraryContainer) {
+    return;
+  }
+
   let dynamicDays = [];
 
   try {
@@ -442,17 +446,36 @@ function renderItinerary(tour) {
   const resolvedDays = dynamicDays.length > 0 ? dynamicDays : fallbackDays;
   const days = resolvedDays.filter((item) => item.value);
 
-  itineraryContainer.innerHTML = days.length
-    ? days.map((item, index) => `
-        <div class="relative pl-7 md:pl-10 ${index < days.length - 1 ? 'pb-7 md:pb-10' : 'pb-2'}">
-          <div class="absolute -left-[8px] md:-left-[9px] top-0 h-4 w-4 rounded-full bg-primary ring-4 ring-white"></div>
-          <div class="rounded-xl border border-outline-variant/10 bg-surface-container-lowest p-6 shadow-sm">
-            <span class="rounded-full bg-primary-fixed px-3 py-1 text-xs font-bold uppercase tracking-widest text-primary-container">${item.dayLabel}</span>
-            ${item.title ? `<h3 class="mb-3 mt-4 text-xl font-bold text-on-surface">${item.title}</h3>` : '<div class="mt-4"></div>'}
+  const renderAccordionItem = (item, index, total) => {
+    const contentId = `tour-detail-itinerary-content-${index + 1}`;
+    const isExpandedByDefault = false;
+
+    return `
+      <div class="relative pl-7 md:pl-10 ${index < total - 1 ? 'pb-7 md:pb-10' : 'pb-2'}">
+        <div class="absolute -left-[8px] md:-left-[9px] top-0 h-4 w-4 rounded-full bg-primary ring-4 ring-white"></div>
+        <div class="rounded-xl border border-outline-variant/10 bg-surface-container-lowest p-6 shadow-sm">
+          <span class="rounded-full bg-primary-fixed px-3 py-1 text-xs font-bold uppercase tracking-widest text-primary-container">${item.dayLabel}</span>
+          <div class="mt-4 flex items-start justify-between gap-3">
+            <h3 class="min-w-0 flex-1 text-base font-bold leading-6 text-on-surface md:text-lg">${item.title || 'Lịch trình trong ngày'}</h3>
+            <button
+              type="button"
+              data-itinerary-toggle
+              data-target-id="${contentId}"
+              class="inline-flex h-8 w-8 min-h-8 min-w-8 shrink-0 items-center justify-center rounded-full border border-primary/20 bg-white text-xl font-black leading-none text-primary transition-colors hover:bg-primary/5"
+              aria-expanded="${isExpandedByDefault ? 'true' : 'false'}"
+              aria-controls="${contentId}"
+            >${isExpandedByDefault ? '−' : '+'}</button>
+          </div>
+          <div id="${contentId}" class="mt-3 ${isExpandedByDefault ? '' : 'hidden'}" data-itinerary-content>
             <p class="whitespace-pre-line leading-relaxed text-on-surface-variant">${item.value}</p>
           </div>
         </div>
-      `).join('')
+      </div>
+    `;
+  };
+
+  itineraryContainer.innerHTML = days.length
+    ? days.map((item, index) => renderAccordionItem(item, index, days.length)).join('')
     : `
         <div class="relative pb-2 pl-7 md:pl-10">
           <div class="absolute -left-[8px] md:-left-[9px] top-0 h-4 w-4 rounded-full bg-primary ring-4 ring-white"></div>
@@ -462,6 +485,26 @@ function renderItinerary(tour) {
           </div>
         </div>
       `;
+
+  itineraryContainer.querySelectorAll('[data-itinerary-toggle]').forEach((toggleButton) => {
+    toggleButton.addEventListener('click', () => {
+      const targetId = toggleButton.getAttribute('data-target-id');
+      if (!targetId) {
+        return;
+      }
+
+      const contentElement = itineraryContainer.querySelector(`#${targetId}`);
+      if (!contentElement) {
+        return;
+      }
+
+      const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
+      const nextExpanded = !isExpanded;
+      toggleButton.setAttribute('aria-expanded', nextExpanded ? 'true' : 'false');
+      toggleButton.textContent = nextExpanded ? '−' : '+';
+      contentElement.classList.toggle('hidden', !nextExpanded);
+    });
+  });
 }
 
 function resolveFixedGuestCount(tour) {
@@ -609,7 +652,12 @@ async function loadTourDetail() {
     catEl.className = `absolute left-4 top-4 inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest ${cls}`;
   })();
   document.querySelector('#tour-detail-title').textContent = tour.title || 'Chi tiết tour';
-  document.querySelector('#tour-detail-summary').textContent = getDetailValue(tour, 'description', 'Đang cập nhật mô tả tour.');
+  const summaryText = getDetailValue(tour, 'description', 'Đang cập nhật mô tả tour.');
+  document.querySelector('#tour-detail-summary').textContent = summaryText;
+  const mobileSummaryElement = document.querySelector('#tour-detail-summary-mobile');
+  if (mobileSummaryElement) {
+    mobileSummaryElement.textContent = summaryText;
+  }
   renderTourGallery(tour);
   document.querySelector('#tour-detail-booking-link').href = `/booking?tourId=${tour.id}`;
 
